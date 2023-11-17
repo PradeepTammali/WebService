@@ -1,0 +1,45 @@
+[project]
+description = "A simple web application to fetch OMDB movies"
+maintainers = [{name = "Pradeep Tammali", email = "pradeepkumartammali@gmail.com"}]
+name = "WebService"
+readme = "README.md"
+version = "1.0"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "error",
+]
+testpaths = ["tests"]
+
+[tool.ruff]
+ignore = [
+  # format
+  'E501', # line too long
+]
+line-length = 120
+select = [
+  'E', # Errors
+  'W', # Warnings
+  'F', # Formatting
+  'S', # Bandit
+]
+
+[tool.ruff.mccabe]
+max-complexity = 10
+
+[tool.ruff.format]
+quote-style = 'single'
+
+[tool.pylint.FORMAT]
+indent-string = '    '
+max-line-length = 120
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = '''
+    missing-docstring,
+    line-too-long,
+'''
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = 'omdb.*'
