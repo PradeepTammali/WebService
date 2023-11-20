@@ -1,4 +1,17 @@
+from enum import Enum
+
 from omdb.config.environment import get_environment, is_running_in_docker
+
+
+class DateFormat(Enum):
+    YYYY_MM_DD = '%Y-%m-%d'  # default
+    MM_DD_YYYY = '%m-%d-%Y'
+    DD_MM_YYYY = '%d-%m-%Y'
+
+
+class TimeFormat(Enum):
+    HH_MM_SS = '%H:%M:%S'  # default
+    HH_MM_SS_TZ = '%H:%M:%S%z'
 
 
 class BaseConfig:
@@ -23,7 +36,13 @@ class EnvironmentConfig(BaseConfig):
     TESTING = False
     DEBUG = False
 
-    # Logging
-    LOGGING_LOGGER_LEVELS: dict[str, str] = {}
-    LOGGING_CONSOLE_LEVEL = 'INFO'
-    LOGGING_CONFIG = 'logging.config.dictConfig'
+    # Default logging levels
+    LOGGING_LOGGER_LEVELS: dict[str, str] = {
+        'console': 'INFO',
+        'docker': 'INFO',
+        'syslog': 'INFO',
+    }
+
+    # Standard datetime format
+    DATE_TIME_FORMAT = f'{DateFormat.YYYY_MM_DD.value} {TimeFormat.HH_MM_SS.value}'
+    DATE_TIME_FORMAT_TZ = f'{DateFormat.YYYY_MM_DD.value}T{TimeFormat.HH_MM_SS_TZ.value}'

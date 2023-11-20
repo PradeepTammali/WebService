@@ -1,12 +1,12 @@
 from flask import Flask
 from flask_cors import CORS
 
-from omdb import config
+from omdb import log
 
 
 def create_app(name: str) -> Flask:
-    config.setup()
     app = Flask(name)
     CORS(app)
+    log.setup()
 
     return app
