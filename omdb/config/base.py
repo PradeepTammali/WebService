@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from dataclasses import dataclass
 from enum import Enum
 
 from omdb.config.environment import get_environment, is_running_in_docker
@@ -32,10 +33,14 @@ class BaseConfig:
         return self.ENVIRONMENT == 'unittest'
 
 
-class EnvironmentConfig(BaseConfig):
-    API_PREFIX = '/api'
-    TESTING = False
+@dataclass
+class AppConfig:
     DEBUG = False
+    TESTING = False
+
+
+class EnvironmentConfig(BaseConfig, AppConfig):
+    API_PREFIX = '/api'
 
     # Default logging levels
     LOGGING_LOGGER_LEVELS: dict[str, str] = {
@@ -47,3 +52,7 @@ class EnvironmentConfig(BaseConfig):
     # Standard datetime format
     DATE_TIME_FORMAT = f'{DateFormat.YYYY_MM_DD.value} {TimeFormat.HH_MM_SS.value}'
     DATE_TIME_FORMAT_TZ = f'{DateFormat.YYYY_MM_DD.value}T{TimeFormat.HH_MM_SS_TZ.value}'
+
+    # Database
+    # NOTE: use light sql here
+    SQLALCHEMY_DATABASE_URI = ''
