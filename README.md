@@ -18,7 +18,10 @@ pipenv install
 
 pre-commit install
 
-pre-commit run --all-files
+pre-commit run --all-files - for first time.
+
+push will be successfull even if there are failed checks for the unstaged changes(non commited files).
+https://github.com/pre-commit/pre-commit/issues/2486
 
 pre-commit clean (rm -rf ~/.cache/pre-commit)  --- clean pre-commit cache
 pre-commit gc - clean unused cached repos
