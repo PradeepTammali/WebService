@@ -5,6 +5,7 @@ SHELL := /bin/bash
 setup:
 	pipenv install --dev
 	pipenv run pre-commit install
+	pipenv run pre-commit install --hook-type commit-msg
 
 install:
 	pipenv install
