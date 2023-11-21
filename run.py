@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ Application loader
 
 This small file is responsible for starting the application with multiple tools:

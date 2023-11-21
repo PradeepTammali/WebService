@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from enum import Enum
 
 from omdb.config.environment import get_environment, is_running_in_docker

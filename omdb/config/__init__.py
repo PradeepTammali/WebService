@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from omdb.config.development import DevelopmentConfig
 from omdb.config.environment import get_environment
 from omdb.config.production import ProductionConfig
