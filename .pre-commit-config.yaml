@@ -71,7 +71,7 @@ repos:
 - repo: local
   hooks:
   - id: commit-msg
-    name: commit check
+    name: Check commit message
     language: pygrep
     entry: '^(chore|test|setup|feature|fix|build|docs|refactor)!?: [a-zA-Z0-9-_ ]+\n[a-zA-Z0-9-_ ]+$'
     args:
