@@ -1,6 +1,15 @@
 # VScode
 .vscode
 
+# Ignore macOS system files
+.DS_Store
+
+# Ignore build artifacts
+bin/
+build/
+*.o
+*.out
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -145,6 +154,9 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# ruff
+.ruff*
 
 # Pyre type checker
 .pyre/
