@@ -68,3 +68,14 @@ repos:
     rev: v2.4.0
     hooks:
     -   id: pycln
+- repo: local
+  hooks:
+  - id: commit-msg
+    name: commit check
+    language: pygrep
+    entry: '^(chore|test|setup|feature|fix|build|docs|refactor)!?: [a-zA-Z0-9-_ ]+\n[a-zA-Z0-9-_ ]+$'
+    args:
+    - --multiline
+    - --negate # fails if the entry is NOT matched
+    stages:
+    - commit-msg
