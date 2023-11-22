@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: setup install lint lint-clean test run
+.PHONY: setup install lint test run clean-setup clean-lint all clean
 
 setup:
 	pipenv install --dev
@@ -13,12 +13,21 @@ install:
 lint:
 	pipenv run pre-commit run --all-files
 
-lint-clean:
-	pipenv run pre-commit clean
-	pipenv run pre-commit gc
-
 test:
 	pipenv run pytest tests/*
 
 run:
 	pipenv run python run.py
+
+clean-setup:
+	pipenv run pre-commit uninstall --hook-type commit-msg
+	pipenv run pre-commit uninstall
+	pipenv clean
+
+clean-lint:
+	pipenv run pre-commit clean
+	pipenv run pre-commit gc
+
+all: setup lint run
+
+clean: clean-lint clean-setup
