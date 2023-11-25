@@ -78,7 +78,6 @@ repos:
     - --negate # fails if the entry is NOT matched
     stages:
     - commit-msg
-repos:
 -   repo: https://github.com/mrtazz/checkmake.git
     rev: 0.2.2
     hooks:
