@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
 
+env:
+  SKIP: ${{ github.ref == 'refs/heads/master' && 'no-commit-to-branch' || '' }}
+
 jobs:
   linting:
     runs-on: ubuntu-latest
