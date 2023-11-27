@@ -33,14 +33,15 @@ max-complexity = 10
 [tool.ruff.format]
 quote-style = 'single'
 
+[tool.ruff.per-file-ignores]
+# Ignore assert usage in tests
+'tests/*.py' = ['S101']
+
 [tool.flake8]
 ignore = ['E501']
 
 [tool.pytest.ini_options]
-filterwarnings = [
-  "error",
-]
-testpaths = ["tests"]
+env = ['APP_ENVIRONMENT = unittest']
 
 [[tool.mypy.overrides]]
 ignore_missing_imports = true

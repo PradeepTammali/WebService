@@ -14,7 +14,7 @@ and install pipenv using this with the command
 pip install pipenv
 
 
-pipenv install
+pipenv install (intead try use pipenv sync)
 
 pre-commit install
 
