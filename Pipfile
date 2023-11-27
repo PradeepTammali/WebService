@@ -11,6 +11,8 @@ flask-cors = "*"
 ruff = "*"
 mypy = "*"
 pre-commit = "*"
+pytest = "*"
+pytest-env = "*"
 
 [requires]
 python_version = "3.11.5"

@@ -16,3 +16,8 @@ class DevelopmentConfig(EnvironmentConfig):
     }
 
     SQLALCHEMY_DATABASE_URI = ''
+
+
+class UnitTestConfig(DevelopmentConfig):
+    DEBUG = True
+    TESTING = True
