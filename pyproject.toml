@@ -1,15 +1,17 @@
 [project]
-description = "A simple web application to fetch OMDB movies"
-maintainers = [{name = "Pradeep Tammali", email = "pradeepkumartammali@gmail.com"}]
-name = "WebService"
-readme = "README.md"
+name = "webservice"
 version = "1.0"
+description = "A simple web application to fetch OMDB movies"
+readme = "README.md"
+maintainers = [{name = "Pradeep Tammali", email = "pradeepkumartammali@gmail.com"}]
 
-[tool.pytest.ini_options]
-filterwarnings = [
-  "error",
-]
-testpaths = ["tests"]
+[tool.autopep8]
+in-place = false
+max_line_length = 120
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
 
 [tool.ruff]
 ignore = [
@@ -31,6 +33,19 @@ max-complexity = 10
 [tool.ruff.format]
 quote-style = 'single'
 
+[tool.flake8]
+ignore = ['E501']
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "error",
+]
+testpaths = ["tests"]
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = 'omdb.*'
+
 [tool.pylint.FORMAT]
 indent-string = '    '
 max-line-length = 120
@@ -41,18 +56,3 @@ disable = '''
     line-too-long,
     import-error,
 '''
-
-[[tool.mypy.overrides]]
-ignore_missing_imports = true
-module = 'omdb.*'
-
-[tool.black]
-line-length = 120
-skip-string-normalization = true
-
-[tool.autopep8]
-in-place = false
-max_line_length = 120
-
-[tool.flake8]
-ignore = ['E501']
