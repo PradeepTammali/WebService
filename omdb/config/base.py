@@ -53,6 +53,6 @@ class EnvironmentConfig(BaseConfig, AppConfig):
     DATE_TIME_FORMAT = f'{DateFormat.YYYY_MM_DD.value} {TimeFormat.HH_MM_SS.value}'
     DATE_TIME_FORMAT_TZ = f'{DateFormat.YYYY_MM_DD.value}T{TimeFormat.HH_MM_SS_TZ.value}'
 
-    # Database
-    # NOTE: use light sql here
-    SQLALCHEMY_DATABASE_URI = ''
+    # Default fallback database
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///project.db'
+    SQLALCHEMY_ECHO = False

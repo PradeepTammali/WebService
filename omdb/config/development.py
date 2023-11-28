@@ -15,8 +15,6 @@ class DevelopmentConfig(EnvironmentConfig):
         'syslog': _log_level,
     }
 
-    SQLALCHEMY_DATABASE_URI = ''
-
 
 class UnitTestConfig(DevelopmentConfig):
     DEBUG = True
