@@ -15,6 +15,7 @@ mypy = "*"
 pre-commit = "*"
 pytest = "*"
 pytest-env = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.11.5"
