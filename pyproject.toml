@@ -56,4 +56,8 @@ disable = '''
     missing-docstring,
     line-too-long,
     import-error,
+    fixme,
 '''
+
+[tool.bandit]
+exclude_dirs = ["tests", "tests/*"]

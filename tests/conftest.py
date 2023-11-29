@@ -4,8 +4,10 @@ from typing import Any
 import pytest
 from flask import Flask, Response
 from flask.testing import FlaskClient
+from flask_sqlalchemy import SQLAlchemy
 
 from omdb import app
+from omdb.db.base import db
 
 
 class BaseTestFlaskClient(FlaskClient):
@@ -35,6 +37,15 @@ class BaseTest:
     @pytest.fixture(autouse=True)
     def setup_application(self, test_app: Flask) -> None:
         self._app = test_app
+
+    @pytest.fixture(autouse=True)
+    def init_db(self, test_app: Flask) -> SQLAlchemy:
+        with test_app.app_context():
+            db.create_all()
+            yield db
+            # TODO: Remove commit after it's handled in after_request
+            db.session.commit()
+            db.drop_all()
 
     @property
     def client(self) -> BaseTestFlaskClient:

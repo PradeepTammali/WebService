@@ -19,3 +19,6 @@ class DevelopmentConfig(EnvironmentConfig):
 class UnitTestConfig(DevelopmentConfig):
     DEBUG = True
     TESTING = True
+
+    # Pytest database
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///test.db'
