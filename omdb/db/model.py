@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Integer
+import pytz
+from sqlalchemy import Column, Integer
 from sqlalchemy.ext.declarative import declared_attr
 
-from omdb.db.base import db
+from omdb.db.base import UtcDateTimeColumn, db
 
 
 class Model(db.Model):
     __abstract__ = True
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
 
     @declared_attr
     def created(self) -> datetime:
-        return Column(DateTime(timezone=True), default=datetime.utcnow, index=True, nullable=False)
+        return UtcDateTimeColumn(default=datetime.now(tz=pytz.utc), index=True, nullable=False)
 
     @declared_attr
     def updated(self) -> datetime:
-        return Column(DateTime(timezone=True), default=datetime.utcnow, index=True, nullable=False)
+        return UtcDateTimeColumn(default=datetime.now(tz=pytz.utc), index=True, nullable=False)
 
     @property
     def class_name(self):

@@ -18,6 +18,9 @@ repos:
     -   id: check-added-large-files
     -   id: check-merge-conflict
     -   id: name-tests-test
+        # ensure tests match `test_.*\.py`
+        # NOTE: arg should be `--pytest-test-first` but only the following works now
+        args: ['--django']
     -   id: no-commit-to-branch
         args: [--branch, master]
 -   repo: https://github.com/pre-commit/pygrep-hooks
@@ -42,6 +45,7 @@ repos:
     rev: v1.7.0
     hooks:
     -   id: mypy
+        additional_dependencies: ['types-pytz']
 -   repo: https://github.com/PyCQA/flake8
     rev: 6.1.0
     hooks:
@@ -51,6 +55,7 @@ repos:
     rev: 1.7.5
     hooks:
     -   id: bandit
+        args: ["-c", "pyproject.toml"]
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.1.6
   hooks:
