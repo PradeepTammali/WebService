@@ -5,6 +5,7 @@ import pytest
 from flask import Flask, Response
 from flask.testing import FlaskClient
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import Session
 
 from omdb import app
 from omdb.db.base import db
@@ -46,6 +47,10 @@ class BaseTest:
             # TODO: Remove commit after it's handled in after_request
             db.session.commit()
             db.drop_all()
+
+    @property
+    def session(self) -> Session:
+        return db.session
 
     @property
     def client(self) -> BaseTestFlaskClient:
