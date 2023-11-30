@@ -43,6 +43,9 @@ ignore = ['E501']
 [tool.pytest.ini_options]
 env = ['APP_ENVIRONMENT = unittest']
 
+[tool.coverage.run]
+include = ['omdb/*']
+
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
 module = 'omdb.*'

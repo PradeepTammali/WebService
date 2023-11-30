@@ -73,6 +73,15 @@ repos:
     rev: v2.4.0
     hooks:
     -   id: pycln
+-   repo: https://github.com/mrtazz/checkmake.git
+    rev: 0.2.2
+    hooks:
+    -   id: checkmake
+- repo: https://github.com/tox-dev/pyproject-fmt
+  rev: "1.0.0"
+  hooks:
+    - id: pyproject-fmt
+      args: ['--check']
 - repo: local
   hooks:
   - id: commit-msg
@@ -83,12 +92,13 @@ repos:
     - --negate # fails if the entry is NOT matched
     stages:
     - commit-msg
--   repo: https://github.com/mrtazz/checkmake.git
-    rev: 0.2.2
-    hooks:
-    -   id: checkmake
-- repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "1.0.0"
+- repo: local
   hooks:
-    - id: pyproject-fmt
-      args: ['--check']
+  - id: pytest
+    name: pytest
+    entry: pipenv run pytest --cov
+    language: system
+    pass_filenames: false
+    always_run: true
+    stages:
+    - pre-push
