@@ -55,7 +55,7 @@ DEFAULT_LOGGING_CONF = {
 }
 
 
-def setup() -> None:
+def setup():
     logging.config.dictConfig(config=DEFAULT_LOGGING_CONF)
 
 

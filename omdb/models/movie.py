@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import validates
 
-from omdb.db.base import db
+from omdb.db.base import StringColumn, TextColumn, db
 from omdb.db.model import Model
 
 
@@ -10,8 +10,8 @@ class Rating(Model):
     __tablename__ = 'rating'
 
     movie_id: int = Column(Integer, ForeignKey('movie.id', ondelete='CASCADE'), nullable=False)
-    source: str = Column(String)
-    value: str = Column(String)
+    source: str = StringColumn()
+    value: str = StringColumn()
 
     @validates('movie_id')
     def validate_movie_id(self, key, movie_id) -> int:
@@ -21,7 +21,7 @@ class Rating(Model):
             raise ValueError(f'Movie with ID {movie_id} does not exist.')
         return movie_id
 
-    def __init__(self, movie_id: int, source: str, value: str) -> None:
+    def __init__(self, movie_id: int, source: str, value: str):
         super().__init__()
         self.movie_id = movie_id
         self.source = source
@@ -32,30 +32,30 @@ class Movie(Model):
     # pylint: disable=too-many-instance-attributes
     __tablename__ = 'movie'
 
-    title: str = Column(String, index=True)
-    year: str = Column(String)
-    rated: str = Column(String)
-    released: str = Column(String)
-    runtime: str = Column(String)
-    genre: str = Column(String)
-    director: str = Column(String)
-    writer: str = Column(String)
-    actors: str = Column(String)
-    plot: str = Column(String)
-    language: str = Column(String)
-    country: str = Column(String)
-    awards: str = Column(String)
-    poster: str = Column(String)
-    metascore: str = Column(String)
-    imdb_rating: str = Column(String)
-    imdb_votes: str = Column(String)
-    imdb_id: str = Column(String, index=True)
-    type: str = Column(String)
-    dvd: str = Column(String)
-    box_office: str = Column(String)
-    production: str = Column(String)
-    website: str = Column(String)
-    response: str = Column(String)
+    title: str = StringColumn(index=True)
+    year: str = StringColumn(max_length=4)
+    rated: str = StringColumn()
+    released: str = StringColumn()
+    runtime: str = StringColumn()
+    genre: str = StringColumn()
+    director: str = StringColumn()
+    writer: str = StringColumn()
+    actors: str = StringColumn()
+    plot: str = TextColumn()
+    language: str = StringColumn()
+    country: str = StringColumn()
+    awards: str = StringColumn(max_length=1000)
+    poster: str = StringColumn(max_length=1000)
+    metascore: str = StringColumn()
+    imdb_rating: str = StringColumn()
+    imdb_votes: str = StringColumn()
+    imdb_id: str = StringColumn(index=True)
+    type: str = StringColumn()
+    dvd: str = StringColumn()
+    box_office: str = StringColumn()
+    production: str = StringColumn()
+    website: str = StringColumn()
+    response: str = StringColumn()
     ratings: list[Rating] = db.relationship(
         'Rating', backref='movie', lazy=True, uselist=True, cascade='all, delete-orphan'
     )
@@ -87,7 +87,7 @@ class Movie(Model):
         production: str,
         website: str,
         response: str,
-    ) -> None:
+    ):
         super().__init__()
         self.title = title
         self.year = year

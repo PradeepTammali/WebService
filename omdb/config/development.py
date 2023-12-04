@@ -21,4 +21,4 @@ class UnitTestConfig(DevelopmentConfig):
     TESTING = True
 
     # Pytest database
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///test.db'
+    MYSQL_DEFAULT_DB_NAME = 'test'

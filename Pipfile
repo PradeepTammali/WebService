@@ -8,6 +8,8 @@ flask = "*"
 flask-cors = "*"
 flask-sqlalchemy = "*"
 pytz = "*"
+pymysql = "*"
+cryptography = "*"
 
 [dev-packages]
 ruff = "*"

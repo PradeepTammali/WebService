@@ -38,6 +38,6 @@ class Model(db.Model):
         db.session.flush()
         return self
 
-    def delete(self: ModelTypeT) -> None:
+    def delete(self: ModelTypeT):
         db.session.delete(self)
         db.session.flush()

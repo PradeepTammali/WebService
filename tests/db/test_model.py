@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer
 
+from omdb.db.base import StringColumn
 from omdb.db.model import Model
 from tests.conftest import BaseTest
 
@@ -11,9 +12,9 @@ class BasicTestModel(Model):
     __tablename__ = 'test_model'
 
     id = Column(Integer, primary_key=True)
-    value = Column(String)
-    value2 = Column(String)
-    value3 = Column(String)
+    value = StringColumn()
+    value2 = StringColumn()
+    value3 = StringColumn()
 
     def __init__(self, value, value2, value3):
         super().__init__()
@@ -24,7 +25,7 @@ class BasicTestModel(Model):
 
 
 class TestDatabase(BaseTest):
-    def test_model(self) -> None:
+    def test_model(self):
         test = BasicTestModel('foo1', 'bar1', 'baz')
         test.save()
         assert test.class_name == BasicTestModel.__name__

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 from dataclasses import dataclass
 from enum import Enum
 
@@ -53,6 +54,21 @@ class EnvironmentConfig(BaseConfig, AppConfig):
     DATE_TIME_FORMAT = f'{DateFormat.YYYY_MM_DD.value} {TimeFormat.HH_MM_SS.value}'
     DATE_TIME_FORMAT_TZ = f'{DateFormat.YYYY_MM_DD.value}T{TimeFormat.HH_MM_SS_TZ.value}'
 
-    # Default fallback database
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///project.db'
+    # Database default name
+    MYSQL_DEFAULT_DB_NAME = 'omdb'
     SQLALCHEMY_ECHO = False
+
+    def __init__(self):
+        # Database configuration
+        _mysql_db_user = os.getenv('SERVICE_DATABASE_USER')
+        _mysql_db_password = os.getenv('SERVICE_DATABASE_PASSWORD')
+        _mysql_db_host = os.getenv('SERVICE_DATABASE_HOST')
+        _mysql_db_port = os.getenv('SERVICE_DATABASE_PORT')
+        _mysql_db_name = os.getenv('SERVICE_DATABASE_NAME', self.MYSQL_DEFAULT_DB_NAME)
+
+        # SQLite as fallback database
+        self.SQLALCHEMY_DATABASE_URI = f'sqlite:///{_mysql_db_name}.db'  # pylint: disable=invalid-name
+
+        # MySQL
+        if all([_mysql_db_user, _mysql_db_password, _mysql_db_host, _mysql_db_port, _mysql_db_name]):
+            self.SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{_mysql_db_user}:{_mysql_db_password}@{_mysql_db_host}:{_mysql_db_port}/{_mysql_db_name}'

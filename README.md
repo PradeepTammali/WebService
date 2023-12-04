@@ -2,6 +2,22 @@
 
 ## Setup
 
+##### Mysql server
+
+`docker run -d --name omdb-mysql -e MYSQL_ROOT_PASSWORD=1234 -p 3308:3306 mysql:8.2`
+
+set env varibles if you want the server to use mysql if any of the env in following is not set, the server will take the default sqllite.
+
+```
+SERVICE_DATABASE_USER
+SERVICE_DATABASE_PASSWORD
+SERVICE_DATABASE_HOST
+SERVICE_DATABASE_PORT
+
+# This database should already exist if mysql
+SERVICE_DATABASE_NAME
+```
+
 ### Development
 
 Install
