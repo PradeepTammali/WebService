@@ -41,6 +41,7 @@ quote-style = 'single'
 
 [tool.isort]
 profile = "black"
+line_length = 120
 
 [tool.flake8]
 ignore = ['E501']

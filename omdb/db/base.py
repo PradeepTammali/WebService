@@ -24,19 +24,12 @@ class StringColumn(Column):  # pylint: disable=too-few-public-methods
         super().__init__(column, **columnkwargs)
         self.inherit_cache = True
 
-    @property
-    def _constructor(self) -> type[Column]:
-        return Column
-
 
 class TextColumn(Column):  # pylint: disable=too-few-public-methods, abstract-method, too-many-ancestors
     def __init__(self, max_length: int = 30000, collation: str | None = None, **columnkwargs):
         column = Text(length=max_length, collation=collation)
         super().__init__(column, **columnkwargs)
-
-    @property
-    def _constructor(self) -> type[Column]:
-        return Column
+        self.inherit_cache = True
 
 
 class UtcDateTimeColumn(Column):  # pylint: disable=too-many-ancestors, abstract-method, too-few-public-methods
@@ -64,6 +57,7 @@ class _UtcDateTime(TypeDecorator):  # pylint: disable=too-many-ancestors, abstra
     """
 
     impl = DateTime(timezone=True)
+    cache_ok = True
 
     def process_bind_param(self, value: datetime.datetime | None, dialect: Dialect) -> datetime.datetime | None:
         del dialect
