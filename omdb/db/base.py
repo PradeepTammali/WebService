@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 import pytz
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, DateTime, MetaData
+from sqlalchemy import Column, DateTime, MetaData, String, Text
 from sqlalchemy.engine.interfaces import Dialect
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.types import TypeDecorator
@@ -18,14 +18,35 @@ convention = {
 metadata = MetaData(naming_convention=convention)
 
 
-class UtcDateTimeColumn(Column):  # pylint: disable=too-few-public-methods
+class StringColumn(Column):  # pylint: disable=too-few-public-methods
+    def __init__(self, max_length: int = 100, collation: str | None = None, **columnkwargs):
+        column = String(length=max_length, collation=collation)
+        super().__init__(column, **columnkwargs)
+        self.inherit_cache = True
+
+    @property
+    def _constructor(self) -> type[Column]:
+        return Column
+
+
+class TextColumn(Column):  # pylint: disable=too-few-public-methods, abstract-method, too-many-ancestors
+    def __init__(self, max_length: int = 30000, collation: str | None = None, **columnkwargs):
+        column = Text(length=max_length, collation=collation)
+        super().__init__(column, **columnkwargs)
+
+    @property
+    def _constructor(self) -> type[Column]:
+        return Column
+
+
+class UtcDateTimeColumn(Column):  # pylint: disable=too-many-ancestors, abstract-method, too-few-public-methods
     def __init__(
         self,
         default: datetime.datetime,
         index: bool = False,
         nullable: bool = False,
         **columnkwargs: dict,
-    ) -> None:
+    ):
         column = _UtcDateTime()
         super().__init__(column, default=default, index=index, nullable=nullable, **columnkwargs)
 

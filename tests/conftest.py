@@ -36,7 +36,7 @@ class BaseTest:
         return application
 
     @pytest.fixture(autouse=True)
-    def setup_application(self, test_app: Flask) -> None:
+    def setup_application(self, test_app: Flask):
         self._app = test_app
 
     @pytest.fixture(autouse=True)

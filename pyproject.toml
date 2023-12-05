@@ -3,7 +3,9 @@ name = "webservice"
 version = "1.0"
 description = "A simple web application to fetch OMDB movies"
 readme = "README.md"
-maintainers = [{ name = "Pradeep Tammali", email = "pradeepkumartammali@gmail.com" }]
+maintainers = [
+  { name = "Pradeep Tammali", email = "pradeepkumartammali@gmail.com" },
+]
 
 [tool.autopep8]
 in-place = false
@@ -37,11 +39,21 @@ quote-style = 'single'
 # Ignore assert usage in tests
 'tests/*.py' = ['S101']
 
+[tool.isort]
+profile = "black"
+
 [tool.flake8]
 ignore = ['E501']
 
 [tool.pytest.ini_options]
-env = ['APP_ENVIRONMENT = unittest']
+env = [
+  'APP_ENVIRONMENT = unittest',
+  # Uncomment following for pytest to choose mysql as database
+  # 'SERVICE_DATABASE_USER = root',
+  # 'SERVICE_DATABASE_PASSWORD = 1234',
+  # 'SERVICE_DATABASE_HOST = mysql',
+  # 'SERVICE_DATABASE_PORT = 3308',
+]
 
 [tool.coverage.run]
 include = ['omdb/*']
@@ -63,7 +75,8 @@ disable = '''
     line-too-long,
     import-error,
     fixme,
+    no-value-for-parameter
 '''
 
 [tool.bandit]
-exclude_dirs = ["tests", "tests/*"]
+exclude_dirs = ["tests/*"]
