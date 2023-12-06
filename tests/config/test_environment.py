@@ -21,6 +21,10 @@ def test_get_environment_invalid(monkeypatch: MonkeyPatch):
 
 
 def test_is_running_in_docker():
+    with patch('builtins.open') as open_mock:
+        open_mock.side_effect = FileNotFoundError
+        assert is_running_in_docker() is False
+
     with patch('builtins.open', mock_open(read_data='sample')):
         assert is_running_in_docker() is False
 
