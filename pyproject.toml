@@ -59,8 +59,13 @@ env = [
 [tool.coverage.run]
 include = ['omdb/*']
 
+[tool.coverage.report]
+show_missing = true
+exclude_lines = ['if TYPE_CHECKING:']
+
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
+implicit_optional = true
 module = 'omdb.*'
 
 [tool.pylint.MASTER]
