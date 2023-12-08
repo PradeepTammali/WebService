@@ -85,4 +85,4 @@ class BaseModel(DeclarativeBase):
     metadata = metadata
 
 
-db = SQLAlchemy(model_class=BaseModel)
+db: SQLAlchemy = SQLAlchemy(model_class=BaseModel)

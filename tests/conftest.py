@@ -5,10 +5,34 @@ import pytest
 from flask import Flask, Response
 from flask.testing import FlaskClient
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer
 from sqlalchemy.orm import Session
 
 from omdb import app
-from omdb.db.base import db
+from omdb.db.base import StringColumn, db
+from omdb.db.model import Model
+from omdb.db.query import BaseQueryList
+
+
+class BaseTestModelQueryList(BaseQueryList['BaseTestModel']):
+    pass
+
+
+class BaseTestModel(Model):
+    __tablename__ = 'test_model'
+    querylist = BaseTestModelQueryList
+
+    id = Column(Integer, primary_key=True)
+    value = StringColumn()
+    value2 = StringColumn()
+    value3 = StringColumn()
+
+    def __init__(self, value, value2, value3):
+        super().__init__()
+
+        self.value = value
+        self.value2 = value2
+        self.value3 = value3
 
 
 class BaseTestFlaskClient(FlaskClient):

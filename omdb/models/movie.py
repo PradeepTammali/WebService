@@ -4,10 +4,16 @@ from sqlalchemy.orm import validates
 
 from omdb.db.base import StringColumn, TextColumn, db
 from omdb.db.model import Model
+from omdb.db.query import BaseQueryList
+
+
+class RatingQueryList(BaseQueryList['Rating']):
+    pass
 
 
 class Rating(Model):
     __tablename__ = 'rating'
+    querylist = RatingQueryList
 
     movie_id: int = Column(Integer, ForeignKey('movie.id', ondelete='CASCADE'), nullable=False)
     source: str = StringColumn()
@@ -17,7 +23,7 @@ class Rating(Model):
     def validate_movie_id(self, key, movie_id) -> int:
         del key
 
-        if not db.session.get(Movie, movie_id):
+        if not Movie.one_or_none(id=movie_id):
             raise ValueError(f'Movie with ID {movie_id} does not exist.')
         return movie_id
 
@@ -28,9 +34,14 @@ class Rating(Model):
         self.value = value
 
 
+class MovieQueryList(BaseQueryList['Movie']):
+    pass
+
+
 class Movie(Model):
     # pylint: disable=too-many-instance-attributes
     __tablename__ = 'movie'
+    querylist = MovieQueryList
 
     title: str = StringColumn(index=True)
     year: str = StringColumn(max_length=4)
@@ -56,7 +67,7 @@ class Movie(Model):
     production: str = StringColumn()
     website: str = StringColumn()
     response: str = StringColumn()
-    ratings: list[Rating] = db.relationship(
+    ratings: RatingQueryList = db.relationship(
         'Rating', backref='movie', lazy=True, uselist=True, cascade='all, delete-orphan'
     )
 

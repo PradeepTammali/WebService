@@ -157,7 +157,7 @@ class TestMovieDatabase(BaseTest):
         movie = Movie(**movie_data)
         movie.save()
 
-        retrieved_movie = Movie.query.filter_by(imdb_id='tt1234567').first()
+        retrieved_movie = Movie.one_or_none(imdb_id='tt1234567')
         assert retrieved_movie.title == 'Test Movie'
         assert retrieved_movie.year == '2022'
         movie.delete()
@@ -169,9 +169,8 @@ class TestMovieDatabase(BaseTest):
         movie.title = 'Updated Title'
         movie.save()
 
-        updated_movie = Movie.query.filter_by(imdb_id='tt1234567').first()
+        updated_movie = Movie.one_or_none(imdb_id='tt1234567')
         assert updated_movie.title == 'Updated Title'
-
         movie.delete()
 
     def test_movie_model_deletion(self):
@@ -180,7 +179,7 @@ class TestMovieDatabase(BaseTest):
 
         movie.delete()
 
-        deleted_movie = Movie.query.filter_by(imdb_id='tt1234567').first()
+        deleted_movie = Movie.one_or_none(imdb_id='tt1234567')
         assert deleted_movie is None
 
     def test_movie_model_deletion_cascade_ratings(self):
@@ -189,11 +188,10 @@ class TestMovieDatabase(BaseTest):
         movie.ratings = [rating]
         movie.save()
 
-        self.session.commit()
         movie.delete()
 
-        deleted_movie = Movie.query.filter_by(imdb_id='tt1234567').first()
+        deleted_movie = Movie.one_or_none(imdb_id='tt1234567')
         assert deleted_movie is None
 
-        deleted_rating = Rating.query.filter_by(movie_id=movie.id).first()
+        deleted_rating = Rating.one_or_none(movie_id=movie.id)
         assert deleted_rating is None
