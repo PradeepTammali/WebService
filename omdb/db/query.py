@@ -56,7 +56,7 @@ class BaseQuery:
             key, func = cls._get_order_dir(sort_by)
             query = query.order_by(func(key))
 
-        result = db.session.execute(query).scalars()
+        result = db.session.scalars(query)
         return cls.querylist(result)
 
     @classmethod
@@ -73,7 +73,7 @@ class BaseQuery:
             raise OmdbQueryException('DB: Do not forget attributes!')
 
         try:
-            result = db.session.execute(db.select(cls).filter_by(**kwargs)).scalar_one_or_none()
+            result = db.session.scalars(db.select(cls).filter_by(**kwargs)).one_or_none()
         except MultipleResultsFound as e:
             raise OmdbQueryMultipleResultsException from e
 
