@@ -3,11 +3,15 @@ import datetime
 from dataclasses import dataclass
 
 import pytz
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, DateTime, MetaData, String, Text
 from sqlalchemy.engine.interfaces import Dialect
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.types import TypeDecorator
+from sqlalchemy_utils import create_database, database_exists
+
+from omdb.config import config
 
 convention = {
     'ix': 'ix_%(column_0_label)s',
@@ -86,3 +90,12 @@ class BaseModel(DeclarativeBase):
 
 
 db: SQLAlchemy = SQLAlchemy(model_class=BaseModel)
+
+
+def setup_db(app: Flask):
+    if not database_exists(config.SQLALCHEMY_DATABASE_URI):
+        create_database(config.SQLALCHEMY_DATABASE_URI)
+
+    db.init_app(app=app)
+    with app.app_context():
+        db.create_all()
