@@ -6,7 +6,7 @@ from flask import Flask, Response
 from flask.testing import FlaskClient
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer
-from sqlalchemy.orm import Session
+from sqlalchemy_utils import drop_database
 
 from omdb import app
 from omdb.db.base import StringColumn, db
@@ -66,15 +66,11 @@ class BaseTest:
     @pytest.fixture(autouse=True)
     def init_db(self, test_app: Flask) -> SQLAlchemy:
         with test_app.app_context():
-            db.create_all()
             yield db
             # TODO: Remove commit after it's handled in after_request
             db.session.commit()
             db.drop_all()
-
-    @property
-    def session(self) -> Session:
-        return db.session
+            drop_database(test_app.config.get('SQLALCHEMY_DATABASE_URI'))
 
     @property
     def client(self) -> BaseTestFlaskClient:
