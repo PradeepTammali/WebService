@@ -23,6 +23,13 @@ jobs:
     - uses: pre-commit/action@v3.0.0
   testing:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.2
+        env:
+          MYSQL_ROOT_PASSWORD: 1234
+        ports:
+          - 3308:3306
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v3
