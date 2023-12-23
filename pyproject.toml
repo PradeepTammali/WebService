@@ -52,7 +52,7 @@ env = [
   # Uncomment following for pytest to choose mysql as database
   'SERVICE_DATABASE_USER = root',
   'SERVICE_DATABASE_PASSWORD = 1234',
-  'SERVICE_DATABASE_HOST = mysql',
+  'SERVICE_DATABASE_HOST = localhost',
   'SERVICE_DATABASE_PORT = 3308',
 ]
 
