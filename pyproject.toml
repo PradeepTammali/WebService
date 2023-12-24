@@ -50,10 +50,10 @@ ignore = ['E501']
 env = [
   'APP_ENVIRONMENT = unittest',
   # Uncomment following for pytest to choose mysql as database
-  # 'SERVICE_DATABASE_USER = root',
-  # 'SERVICE_DATABASE_PASSWORD = 1234',
-  # 'SERVICE_DATABASE_HOST = mysql',
-  # 'SERVICE_DATABASE_PORT = 3308',
+  'SERVICE_DATABASE_USER = root',
+  'SERVICE_DATABASE_PASSWORD = 1234',
+  'SERVICE_DATABASE_HOST = localhost',
+  'SERVICE_DATABASE_PORT = 3308',
 ]
 
 [tool.coverage.run]
@@ -81,7 +81,8 @@ disable = '''
     line-too-long,
     import-error,
     fixme,
-    no-value-for-parameter
+    no-value-for-parameter,
+    too-few-public-methods
 '''
 
 [tool.bandit]

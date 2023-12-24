@@ -10,6 +10,7 @@ class DateFormat(Enum):
     YYYY_MM_DD = '%Y-%m-%d'  # default
     MM_DD_YYYY = '%m-%d-%Y'
     DD_MM_YYYY = '%d-%m-%Y'
+    DD_BB_YYYY = '%d %b %Y'
 
 
 class TimeFormat(Enum):
@@ -53,6 +54,11 @@ class EnvironmentConfig(BaseConfig, AppConfig):
     # Standard datetime format
     DATE_TIME_FORMAT = f'{DateFormat.YYYY_MM_DD.value} {TimeFormat.HH_MM_SS.value}'
     DATE_TIME_FORMAT_TZ = f'{DateFormat.YYYY_MM_DD.value}T{TimeFormat.HH_MM_SS_TZ.value}'
+
+    # OMDB API config
+    OMDB_API_KEY = os.getenv('OMDB_API_KEY', '1b4aea85')
+    OMDB_DATA_TYPE = os.getenv('OMDB_DATA_TYPE', 'movie')
+    OMDB_SEARCH_KEY = os.getenv('OMDB_SEARCH_KEY', 'avengers')
 
     # Database default name
     MYSQL_DEFAULT_DB_NAME = 'omdb'

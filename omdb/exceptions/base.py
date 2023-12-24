@@ -9,3 +9,11 @@ class OmdbQueryException(OmdbBaseException):
 
 class OmdbQueryMultipleResultsException(OmdbBaseException):
     pass
+
+
+class OmdbRequestException(OmdbBaseException):
+    pass
+
+
+class OmdbInvalidDataException(OmdbBaseException):
+    pass

@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy import Column, ForeignKey, Integer
+import enum
+from datetime import datetime
+
+from sqlalchemy import Boolean, Column, Enum, Float, ForeignKey, Integer
 from sqlalchemy.orm import validates
 
-from omdb.db.base import StringColumn, TextColumn, db
+from omdb.db.base import StringColumn, TextColumn, UtcDateTimeColumn, db
 from omdb.db.model import Model
 from omdb.db.query import BaseQueryList
+
+
+class OmdbResultType(enum.Enum):
+    MOVIE = 'movie'
+    SERIES = 'series'
+    EPISODE = 'episode'
 
 
 class RatingQueryList(BaseQueryList['Rating']):
@@ -46,30 +55,28 @@ class Movie(Model):
     title: str = StringColumn(index=True)
     year: str = StringColumn(max_length=4)
     rated: str = StringColumn()
-    released: str = StringColumn()
+    released: datetime = UtcDateTimeColumn(nullable=True)
     runtime: str = StringColumn()
     genre: str = StringColumn()
-    director: str = StringColumn()
-    writer: str = StringColumn()
-    actors: str = StringColumn()
+    director: str = StringColumn(max_length=1000)
+    writer: str = StringColumn(max_length=1000)
+    actors: str = StringColumn(max_length=1000)
     plot: str = TextColumn()
     language: str = StringColumn()
     country: str = StringColumn()
     awards: str = StringColumn(max_length=1000)
     poster: str = StringColumn(max_length=1000)
-    metascore: str = StringColumn()
-    imdb_rating: str = StringColumn()
+    metascore: int = Column(Integer)
+    imdb_rating: float = Column(Float)
     imdb_votes: str = StringColumn()
-    imdb_id: str = StringColumn(index=True)
-    type: str = StringColumn()
+    imdb_id: str = StringColumn(index=True, nullable=False)
+    type: OmdbResultType = Column(Enum(OmdbResultType))
     dvd: str = StringColumn()
     box_office: str = StringColumn()
     production: str = StringColumn()
-    website: str = StringColumn()
-    response: str = StringColumn()
-    ratings: RatingQueryList = db.relationship(
-        'Rating', backref='movie', lazy=True, uselist=True, cascade='all, delete-orphan'
-    )
+    website: str = StringColumn(max_length=1000)
+    response: bool = Column(Boolean)
+    ratings: RatingQueryList = db.relationship('Rating', backref='movie', cascade='all, delete-orphan')
 
     def __init__(
         # pylint: disable=too-many-arguments,too-many-locals
@@ -77,7 +84,7 @@ class Movie(Model):
         title: str,
         year: str,
         rated: str,
-        released: str,
+        released: datetime,
         runtime: str,
         genre: str,
         director: str,
@@ -88,16 +95,16 @@ class Movie(Model):
         country: str,
         awards: str,
         poster: str,
-        metascore: str,
-        imdb_rating: str,
+        metascore: int,
+        imdb_rating: float,
         imdb_votes: str,
         imdb_id: str,
-        type_: str,
         dvd: str,
         box_office: str,
         production: str,
         website: str,
-        response: str,
+        response: bool,
+        type_: OmdbResultType = OmdbResultType.MOVIE,
     ):
         super().__init__()
         self.title = title

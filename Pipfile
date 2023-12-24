@@ -11,6 +11,9 @@ pytz = "*"
 pymysql = "*"
 cryptography = "*"
 sqlalchemy-utils = "*"
+marshmallow = "*"
+marshmallow-enum = "*"
+requests = "*"
 
 [dev-packages]
 ruff = "*"

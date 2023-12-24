@@ -53,11 +53,15 @@ class BaseQuery:
         query: Query = db.select(cls).filter_by(**kwargs)
 
         if sort_by:
-            key, func = cls._get_order_dir(sort_by)
-            query = query.order_by(func(key))
+            key, ord_func = cls._get_order_dir(sort_by)
+            query = query.order_by(ord_func(key))
 
         result = db.session.scalars(query)
         return cls.querylist(result)
+
+    @classmethod
+    def count(cls: type[BaseQuery | Model]) -> int:
+        return db.session.query(getattr(cls, 'id')).count()
 
     @classmethod
     def one(cls: type[BaseQuery | Model], **kwargs: dict) -> Model:
