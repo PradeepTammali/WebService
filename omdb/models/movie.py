@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import enum
+from datetime import datetime
 
 from sqlalchemy import Boolean, Column, Enum, Float, ForeignKey, Integer
 from sqlalchemy.orm import validates
@@ -54,7 +55,7 @@ class Movie(Model):
     title: str = StringColumn(index=True)
     year: str = StringColumn(max_length=4)
     rated: str = StringColumn()
-    released: str = UtcDateTimeColumn(nullable=True)
+    released: datetime = UtcDateTimeColumn(nullable=True)
     runtime: str = StringColumn()
     genre: str = StringColumn()
     director: str = StringColumn(max_length=1000)
@@ -65,8 +66,8 @@ class Movie(Model):
     country: str = StringColumn()
     awards: str = StringColumn(max_length=1000)
     poster: str = StringColumn(max_length=1000)
-    metascore: str = Column(Integer)
-    imdb_rating: str = Column(Float)
+    metascore: int = Column(Integer)
+    imdb_rating: float = Column(Float)
     imdb_votes: str = StringColumn()
     imdb_id: str = StringColumn(index=True, nullable=False)
     type: OmdbResultType = Column(Enum(OmdbResultType))
@@ -74,10 +75,8 @@ class Movie(Model):
     box_office: str = StringColumn()
     production: str = StringColumn()
     website: str = StringColumn(max_length=1000)
-    response: str = Column(Boolean)
-    ratings: RatingQueryList = db.relationship(
-        'Rating', backref='movie', lazy=True, uselist=True, cascade='all, delete-orphan'
-    )
+    response: bool = Column(Boolean)
+    ratings: RatingQueryList = db.relationship('Rating', backref='movie', cascade='all, delete-orphan')
 
     def __init__(
         # pylint: disable=too-many-arguments,too-many-locals
@@ -85,7 +84,7 @@ class Movie(Model):
         title: str,
         year: str,
         rated: str,
-        released: str,
+        released: datetime,
         runtime: str,
         genre: str,
         director: str,
@@ -96,15 +95,15 @@ class Movie(Model):
         country: str,
         awards: str,
         poster: str,
-        metascore: str,
-        imdb_rating: str,
+        metascore: int,
+        imdb_rating: float,
         imdb_votes: str,
         imdb_id: str,
         dvd: str,
         box_office: str,
         production: str,
         website: str,
-        response: str,
+        response: bool,
         type_: OmdbResultType = OmdbResultType.MOVIE,
     ):
         super().__init__()

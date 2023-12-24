@@ -2,7 +2,7 @@
 import sys
 
 from flask import Flask
-from sqlalchemy_utils import drop_database
+from sqlalchemy_utils import database_exists, drop_database
 
 from omdb.config import config
 from omdb.db.base import db
@@ -78,9 +78,11 @@ def populate_database(app: Flask):
         try:
             _dump_data_to_db(movies_data=movies_data)
         except Exception:  # pylint: disable=broad-exception-caught
+            # Cleaning up database to build freshly
             db.session.rollback()
             db.drop_all()
-            drop_database(config.SQLALCHEMY_DATABASE_URI)
+            if database_exists(config.SQLALCHEMY_DATABASE_URI):
+                drop_database(config.SQLALCHEMY_DATABASE_URI)
             log.error('Error while building database...')
             sys.exit(1)
 

@@ -7,7 +7,7 @@ from flask.testing import FlaskClient
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer
 from sqlalchemy.orm import close_all_sessions
-from sqlalchemy_utils import drop_database
+from sqlalchemy_utils import database_exists, drop_database
 
 from omdb import app
 from omdb.db.base import StringColumn, db
@@ -52,6 +52,7 @@ class BaseTestFlaskClient(FlaskClient):
 
 class BaseTest:
     _app: Flask
+    assert_raises = staticmethod(pytest.raises)
 
     @pytest.fixture
     def test_app(self) -> Flask:
@@ -71,7 +72,8 @@ class BaseTest:
             db.session.rollback()
             db.drop_all()
             close_all_sessions()
-            drop_database(test_app.config.get('SQLALCHEMY_DATABASE_URI'))
+            if database_exists(test_app.config.get('SQLALCHEMY_DATABASE_URI')):
+                drop_database(test_app.config.get('SQLALCHEMY_DATABASE_URI'))
 
     @property
     def client(self) -> BaseTestFlaskClient:

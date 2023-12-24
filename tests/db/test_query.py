@@ -65,6 +65,11 @@ class TestBaseQuery(BaseTest):
         assert result[0].value == 'b'
         assert result[1].value == 'a'
 
+    def test_count(self):
+        BaseTestModel('a', 'bar1', 'baz').save()
+        BaseTestModel('b', 'bar1', 'baz').save()
+        assert BaseTestModel.count() == 2
+
     def test_one(self):
         with pytest.raises(OmdbQueryException, match='Do not forget attributes!'):
             BaseTestModel.one()

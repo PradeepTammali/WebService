@@ -60,7 +60,7 @@ class OmdbRequest:
         data: Any = None,
         params: dict[str, Any] = None,
         **kwargs: dict,
-    ) -> dict | None:
+    ) -> dict:
         if method not in self.request_supported_methods:
             raise OmdbRequestException(f'Methods allowed: {self.request_supported_methods}')
 
@@ -79,8 +79,8 @@ class OmdbRequest:
         kwargs['headers'] = headers
         response: requests.Response = getattr(self.session, method)(url=url, data=data, params=request_params, **kwargs)
 
-        if response is None:
-            return None
+        if not response:
+            raise OmdbRequestException('Empty response')
 
         # Log response codes in this list, off by default
         if self.request_log_response_codes and response.status_code in self.request_log_response_codes:
@@ -95,17 +95,14 @@ class OmdbRequest:
             )
             raise OmdbRequestException(f'Request failed: {response.text}')
 
-        if not response:
-            return None
-
         return response.json()
 
-    def search(self, page: int = None) -> dict | None:
+    def search(self, page: int = None, **kwargs) -> dict:
         _params: dict[str, Any] = {'s': config.OMDB_SEARCH_KEY}
         if page:
             _params.update({'page': page})
-        return self._request(method='GET', params=_params)
+        return self._request(method='GET', params=_params, **kwargs)
 
-    def get_by_imdb_id(self, imdb_id: str) -> dict | None:
+    def get_by_imdb_id(self, imdb_id: str, **kwargs) -> dict:
         _params = {'i': imdb_id}
-        return self._request(method='GET', params=_params)
+        return self._request(method='GET', params=_params, **kwargs)

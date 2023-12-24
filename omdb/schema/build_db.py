@@ -6,19 +6,19 @@ from omdb.schema.base import BaseSchema
 from omdb.schema.movie import MovieSchema, RatingSchema
 
 
-def titlecase(value: str) -> str:
-    return ''.join(part.title() for part in value.split('_'))
-
-
 class CustomResultSchema(BaseSchema):
     def __init__(self, *args, **kwargs):
-        default_excluded_fields = ('id', 'created', 'updated')
-        existing_excluded_fields = kwargs.get('exclude', ())
-        kwargs['exclude'] = tuple(set(existing_excluded_fields + default_excluded_fields))
+        default_exclude_fields = ['id', 'created', 'updated']
+        existing_exclude_fields = kwargs.get('exclude', ())
+        default_exclude_fields.extend(existing_exclude_fields)
+        kwargs['exclude'] = tuple(set(default_exclude_fields))
         super().__init__(*args, **kwargs)
 
+    def _titlecase(self, value: str) -> str:
+        return ''.join(part.title() for part in value.split('_'))
+
     def on_bind_field(self, field_name: str, field_obj: fields.Field):
-        field_obj.data_key = field_obj.data_key or titlecase(field_name)
+        field_obj.data_key = field_obj.data_key or self._titlecase(field_name)
         field_obj.allow_none = not field_obj.required
         return super().on_bind_field(field_name, field_obj)
 
