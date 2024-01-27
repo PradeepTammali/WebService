@@ -4,7 +4,7 @@ from copy import copy
 
 import pytest
 import pytz
-from sqlalchemy.exc import DataError
+from sqlalchemy.exc import DataError, IntegrityError
 
 from omdb.config.base import DateFormat
 from omdb.models.movie import Movie, OmdbResultType, Rating
@@ -76,7 +76,7 @@ class TestRatingDatabase(BaseTest):
         assert str(rating) == f'{Rating.__name__}(id={rating.id})'
 
     def test_rating_model_invalid_movie_id(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(IntegrityError):
             rating_data = {
                 'movie_id': 123,  # Nonexistent movie ID
                 'source': 'IMDb',
@@ -87,7 +87,7 @@ class TestRatingDatabase(BaseTest):
             rating.save()
 
     def test_rating_model_invalid_source(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(IntegrityError):
             rating_data = {
                 'movie_id': 1,
                 'source': 123,  # Invalid source
@@ -98,7 +98,7 @@ class TestRatingDatabase(BaseTest):
             rating.save()
 
     def test_rating_model_invalid_value(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(IntegrityError):
             rating_data = {
                 'movie_id': 1,
                 'source': 'IMDb',
