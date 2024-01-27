@@ -3,7 +3,6 @@ import enum
 from datetime import datetime
 
 from sqlalchemy import Boolean, Column, Enum, Float, ForeignKey, Integer
-from sqlalchemy.orm import validates
 
 from omdb.db.base import StringColumn, TextColumn, UtcDateTimeColumn, db
 from omdb.db.model import Model
@@ -27,14 +26,6 @@ class Rating(Model):
     movie_id: int = Column(Integer, ForeignKey('movie.id', ondelete='CASCADE'), nullable=False)
     source: str = StringColumn()
     value: str = StringColumn()
-
-    @validates('movie_id')
-    def validate_movie_id(self, key, movie_id) -> int:
-        del key
-
-        if not Movie.one_or_none(id=movie_id):
-            raise ValueError(f'Movie with ID {movie_id} does not exist.')
-        return movie_id
 
     def __init__(self, movie_id: int, source: str, value: str):
         super().__init__()
