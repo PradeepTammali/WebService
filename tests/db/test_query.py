@@ -3,7 +3,8 @@ import pytest
 
 from omdb.db.query import BaseQueryList
 from omdb.exceptions.base import OmdbQueryException, OmdbQueryMultipleResultsException
-from tests.conftest import BaseTest, BaseTestModel
+from tests.conftest import BaseTest
+from tests.shared import BaseTestModel
 
 
 class TestBaseQueryListSave(BaseTest):
@@ -64,6 +65,22 @@ class TestBaseQuery(BaseTest):
         assert isinstance(result, BaseQueryList)
         assert result[0].value == 'b'
         assert result[1].value == 'a'
+
+    def test_lookup_paginate(self):
+        for i in range(10):
+            BaseTestModel(f'foo{i}', 'bar1', 'baz').save()
+
+        result = BaseTestModel.lookup(limit=5)
+        assert isinstance(result, BaseQueryList)
+        assert len(result) == 5
+        for i, model in enumerate(result):
+            assert model.value == f'foo{i}'
+
+        result = BaseTestModel.lookup(limit=5, offset=5)
+        assert isinstance(result, BaseQueryList)
+        assert len(result) == 5
+        for i, model in enumerate(result):
+            assert model.value == f'foo{i+5}'
 
     def test_count(self):
         BaseTestModel('a', 'bar1', 'baz').save()

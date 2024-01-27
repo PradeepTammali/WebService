@@ -44,7 +44,7 @@ profile = "black"
 line_length = 120
 
 [tool.flake8]
-ignore = ['E501']
+ignore = ['E501', 'W503', 'W504']
 
 [tool.pytest.ini_options]
 env = [

@@ -18,6 +18,7 @@ repos:
     -   id: check-added-large-files
     -   id: check-merge-conflict
     -   id: name-tests-test
+        exclude: ^tests/shared.py$
         # ensure tests match `test_.*\.py`
         # NOTE: arg should be `--pytest-test-first` but only the following works now
         args: ['--django']
