@@ -16,4 +16,4 @@ app = create_app('omdb')
 if __name__ == '__main__':
     threaded = bool(os.environ.get('THREADED', False))
     log.info('Threaded: %s', threaded)
-    app.run(port=6000, threaded=threaded)
+    app.run(port=5555, threaded=threaded)

@@ -5,6 +5,7 @@ from flask_cors import CORS
 from omdb import log
 from omdb.config import config
 from omdb.db.base import setup_db
+from omdb.routes.movie import movies as movie_blueprints
 from omdb.utils.build_db import populate_database
 
 
@@ -17,5 +18,8 @@ def create_app(name: str) -> Flask:
     log.setup()
     setup_db(app=app)
     populate_database(app=app)
+
+    # Register blueprints
+    app.register_blueprint(movie_blueprints)
 
     return app

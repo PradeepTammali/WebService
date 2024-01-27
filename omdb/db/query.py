@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, Generic, TypeVar
 
 from sqlalchemy import asc, desc
 from sqlalchemy.exc import MultipleResultsFound
@@ -35,8 +35,8 @@ class BaseQueryList(list[ModelT]):
         return f'{self.__class__.__name__}'
 
 
-class BaseQuery:
-    querylist: type[BaseQueryList]
+class BaseQuery(Generic[ModelT]):
+    querylist: type[BaseQueryList] = BaseQueryList
 
     @classmethod
     def _get_order_dir(cls, field: str) -> tuple[str, Callable]:
@@ -48,6 +48,8 @@ class BaseQuery:
     def lookup(
         cls: type[BaseQuery | Model],
         sort_by: str = None,
+        limit: int = None,
+        offset: int = None,
         **kwargs: dict,
     ) -> BaseQueryList[ModelT]:
         query: Query = db.select(cls).filter_by(**kwargs)
@@ -56,8 +58,14 @@ class BaseQuery:
             key, ord_func = cls._get_order_dir(sort_by)
             query = query.order_by(ord_func(key))
 
+        if limit:
+            query = query.limit(int(limit))
+
+        if offset:
+            query = query.offset(int(offset))
+
         result = db.session.scalars(query)
-        return cls.querylist(result)
+        return BaseQueryList(result)
 
     @classmethod
     def count(cls: type[BaseQuery | Model]) -> int:

@@ -30,7 +30,10 @@ class Model(db.Model, BaseQuery):
         return self.__class__.__name__
 
     def __repr__(self) -> str:
-        return f'{self.class_name}.{self.id}'
+        fields: tuple = getattr(self, '__repr_fields__', tuple())
+        fields = ('id',) + fields
+        field_values = ', '.join(f'{field}={getattr(self, field)}' for field in fields)
+        return f'{self.class_name}({field_values})'
 
     def save(self: type[Model]) -> type[Model]:
         if self not in db.session:

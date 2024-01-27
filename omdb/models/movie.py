@@ -50,6 +50,8 @@ class MovieQueryList(BaseQueryList['Movie']):
 class Movie(Model):
     # pylint: disable=too-many-instance-attributes
     __tablename__ = 'movie'
+    __repr_fields__ = ('imdb_id',)
+
     querylist = MovieQueryList
 
     title: str = StringColumn(index=True)

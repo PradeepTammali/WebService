@@ -2,12 +2,17 @@
 from omdb.config.base import DateFormat
 from omdb.models.movie import OmdbResultType
 from omdb.schema import fields
-from omdb.schema.base import ModelSchema
+from omdb.schema.base import BaseSchema, ModelSchema
 
 
 class RatingSchema(ModelSchema):
     source = fields.Str()
     value = fields.Str()
+
+
+class MovieInputSchema(BaseSchema):
+    limit = fields.Limit()
+    offset = fields.Int(load_default=0, metadata={'max': 100})
 
 
 class MovieSchema(ModelSchema):

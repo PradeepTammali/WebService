@@ -11,7 +11,7 @@ def subcommands():
 
 @click.command()
 @click.option('--host', default='0.0.0.0')  # nosec  # noqa: S104
-@click.option('--port', default=6000, type=int)
+@click.option('--port', default=5555, type=int)
 @click.option('--debug', default=True, type=bool)
 @click.pass_context
 def server(context, host: str, port: int, debug: bool):

@@ -29,6 +29,21 @@ class ID(Int):
         self.validators.insert(0, Range(min=1, max=4294967295))  # max value of int(11) = 2 ** 32 - 1
 
 
+class Limit(Int):
+    """Pagination limit field with default load_default=10 and min=0 and max=100.
+    Max can only be overriden by Range validator, min cannot be overriden.
+    """
+
+    def __init__(self, *args, maximum=100, load_default=10, **kwargs):
+        # min and max are our custom args
+        # load_default and load_only are marshmallow args
+        kwargs['load_default'] = load_default
+        kwargs['load_only'] = True
+        super().__init__(*args, **kwargs)
+
+        self.validators.insert(0, Range(min=1, max=maximum))
+
+
 __all__ = [
     'pre_load',
     'Bool',
@@ -44,4 +59,5 @@ __all__ = [
     'EnumField',
     'UtcDateTime',
     'ID',
+    'Limit',
 ]
