@@ -73,7 +73,7 @@ class TestRatingDatabase(BaseTest):
         rating = Rating(**rating_data)
         rating.save()
 
-        assert str(rating) == f'{Rating.__name__}.{rating.id}'
+        assert str(rating) == f'{Rating.__name__}(id={rating.id})'
 
     def test_rating_model_invalid_movie_id(self):
         with pytest.raises(ValueError):

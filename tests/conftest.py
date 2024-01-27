@@ -5,35 +5,12 @@ import pytest
 from flask import Flask, Response
 from flask.testing import FlaskClient
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer
 from sqlalchemy.orm import close_all_sessions
 from sqlalchemy_utils import database_exists, drop_database
 
 from omdb import app
-from omdb.db.base import StringColumn, db
-from omdb.db.model import Model
-from omdb.db.query import BaseQueryList
-
-
-class BaseTestModelQueryList(BaseQueryList['BaseTestModel']):
-    pass
-
-
-class BaseTestModel(Model):
-    __tablename__ = 'test_model'
-    querylist = BaseTestModelQueryList
-
-    id = Column(Integer, primary_key=True)
-    value = StringColumn()
-    value2 = StringColumn()
-    value3 = StringColumn()
-
-    def __init__(self, value, value2, value3):
-        super().__init__()
-
-        self.value = value
-        self.value2 = value2
-        self.value3 = value3
+from omdb.db.base import db
+from tests.shared import http_blueprint
 
 
 class BaseTestFlaskClient(FlaskClient):
@@ -59,6 +36,8 @@ class BaseTest:
         application = app.create_app('test')
         application.test_client_class = BaseTestFlaskClient
 
+        # Register test blueprints
+        application.register_blueprint(http_blueprint)
         return application
 
     @pytest.fixture(autouse=True)

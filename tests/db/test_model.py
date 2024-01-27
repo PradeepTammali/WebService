@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from tests.conftest import BaseTest, BaseTestModel
+from tests.conftest import BaseTest
+from tests.shared import BaseTestModel
 
 
 class TestDatabase(BaseTest):

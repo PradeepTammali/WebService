@@ -72,7 +72,7 @@ class BaseQuery(Generic[ModelT]):
         return db.session.query(getattr(cls, 'id')).count()
 
     @classmethod
-    def one(cls: type[BaseQuery | Model], **kwargs: dict) -> Model:
+    def one(cls: type[BaseQuery | Model], **kwargs) -> Model:
         if not kwargs:
             raise OmdbQueryException('DB: Do not forget attributes!')
 
@@ -80,7 +80,7 @@ class BaseQuery(Generic[ModelT]):
         return result
 
     @classmethod
-    def one_or_none(cls: type[BaseQuery | Model], **kwargs: dict) -> Model | None:
+    def one_or_none(cls: type[BaseQuery | Model], **kwargs) -> Model | None:
         if not kwargs:
             raise OmdbQueryException('DB: Do not forget attributes!')
 
