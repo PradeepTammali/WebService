@@ -17,3 +17,7 @@ class OmdbRequestException(OmdbBaseException):
 
 class OmdbInvalidDataException(OmdbBaseException):
     pass
+
+
+class OmdbModelNotFoundException(OmdbBaseException):
+    pass
