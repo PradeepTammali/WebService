@@ -2,7 +2,7 @@
 import datetime
 
 from tests.conftest import BaseTest
-from tests.shared import BaseTestModel
+from tests.shared.base import BaseTestModel
 
 
 class TestDatabase(BaseTest):

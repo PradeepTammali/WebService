@@ -4,7 +4,7 @@ import pytest
 from omdb.db.query import BaseQueryList
 from omdb.exceptions.base import OmdbQueryException, OmdbQueryMultipleResultsException
 from tests.conftest import BaseTest
-from tests.shared import BaseTestModel
+from tests.shared.base import BaseTestModel
 
 
 class TestBaseQueryListSave(BaseTest):
