@@ -1,42 +1,9 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint
-from sqlalchemy import Column, Integer
 from werkzeug.exceptions import BadRequest, InternalServerError
 
-from omdb.db.base import StringColumn
-from omdb.db.model import Model
-from omdb.db.query import BaseQueryList
-from omdb.schema import fields
-from omdb.schema.base import ModelSchema
 from omdb.utils.http import error, success, validate_schema
-
-
-class BaseTestSchema(ModelSchema):
-    value = fields.Str(required=True)
-    value2 = fields.Str(required=True)
-    value3 = fields.Str(required=True)
-
-
-class BaseTestModelQueryList(BaseQueryList['BaseTestModel']):
-    pass
-
-
-class BaseTestModel(Model):
-    __tablename__ = 'test_model'
-    querylist = BaseTestModelQueryList
-
-    id = Column(Integer, primary_key=True)
-    value = StringColumn()
-    value2 = StringColumn()
-    value3 = StringColumn()
-
-    def __init__(self, value, value2, value3):
-        super().__init__()
-
-        self.value = value
-        self.value2 = value2
-        self.value3 = value3
-
+from tests.shared.base import BaseTestModel, BaseTestSchema
 
 http_blueprint = Blueprint('http_blueprint_app', __name__, url_prefix='/api/test_http')
 

@@ -10,7 +10,7 @@ from sqlalchemy_utils import database_exists, drop_database
 
 from omdb import app
 from omdb.db.base import db
-from tests.shared import http_blueprint
+from tests.shared.http import http_blueprint
 
 
 class BaseTestFlaskClient(FlaskClient):
