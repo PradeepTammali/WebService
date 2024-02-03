@@ -99,7 +99,6 @@ class Movie(Model):
         response: bool,
         type_: OmdbResultType = OmdbResultType.MOVIE,
     ):
-        super().__init__()
         self.title = title
         self.year = year
         self.rated = rated
