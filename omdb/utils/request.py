@@ -106,3 +106,7 @@ class OmdbRequest:
     def get_by_imdb_id(self, imdb_id: str, **kwargs) -> dict:
         _params = {'i': imdb_id}
         return self._request(method='GET', params=_params, **kwargs)
+
+    def get_by_title(self, title: str, **kwargs) -> dict:
+        _params = {'t': title}
+        return self._request(method='GET', params=_params, **kwargs)

@@ -84,3 +84,24 @@ class TestOmdbRequest(BaseTest):
         omdb_request = OmdbRequest()
         with self.assert_raises(OmdbRequestException):
             omdb_request.get_by_imdb_id(imdb_id='tt123456')
+
+    @patch('omdb.utils.request.requests.Session.get')
+    def test_get_by_title_successful(self, mock_get: MagicMock):
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.json.return_value = {
+            'Title': 'The Avengers',
+            'Year': '2012',
+            'imdbID': 'tt123456',
+            'Type': 'movie',
+        }
+        omdb_request = OmdbRequest()
+        result = omdb_request.get_by_title(title='The Avengers')
+        assert result['Title'] == 'The Avengers'
+
+    @patch('omdb.utils.request.requests.Session.get')
+    def test_get_by_title_failure(self, mock_get: MagicMock):
+        mock_get.return_value.status_code = 403
+        mock_get.return_value.text = 'Forbidden'
+        omdb_request = OmdbRequest()
+        with self.assert_raises(OmdbRequestException):
+            omdb_request.get_by_title(title='invalid_title')
