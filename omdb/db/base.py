@@ -23,18 +23,24 @@ metadata = MetaData(naming_convention=convention)
 
 
 class StringColumn(Column):
+    inherit_cache = True
+
     def __init__(self, max_length: int = 100, collation: str | None = None, **columnkwargs):
         column = String(length=max_length, collation=collation)
         super().__init__(column, **columnkwargs)
 
 
 class TextColumn(Column):  # pylint: disable=abstract-method, too-many-ancestors
+    inherit_cache = True
+
     def __init__(self, max_length: int = 30000, collation: str | None = None, **columnkwargs):
         column = Text(length=max_length, collation=collation)
         super().__init__(column, **columnkwargs)
 
 
 class UtcDateTimeColumn(Column):  # pylint: disable=too-many-ancestors, abstract-method
+    inherit_cache = True
+
     def __init__(
         self,
         default: datetime.datetime = None,
