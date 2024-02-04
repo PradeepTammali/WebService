@@ -7,7 +7,7 @@ from sqlalchemy import asc, desc
 from sqlalchemy.exc import MultipleResultsFound
 
 from omdb.db.base import db
-from omdb.exceptions.base import OmdbQueryException, OmdbQueryMultipleResultsException
+from omdb.exceptions.base import OmdbModelNotFoundException, OmdbQueryException, OmdbQueryMultipleResultsException
 
 if TYPE_CHECKING:
     from sqlalchemy.orm import Query
@@ -76,7 +76,10 @@ class BaseQuery(Generic[ModelT]):
         if not kwargs:
             raise OmdbQueryException('DB: Do not forget attributes!')
 
-        result = db.one_or_404(db.select(cls).filter_by(**kwargs))
+        result = cls.one_or_none(**kwargs)
+        if result is None:
+            raise OmdbModelNotFoundException(f'{cls.__name__}')
+
         return result
 
     @classmethod

@@ -2,7 +2,7 @@
 import pytest
 
 from omdb.db.query import BaseQueryList
-from omdb.exceptions.base import OmdbQueryException, OmdbQueryMultipleResultsException
+from omdb.exceptions.base import OmdbModelNotFoundException, OmdbQueryException, OmdbQueryMultipleResultsException
 from tests.conftest import BaseTest
 from tests.shared.base import BaseTestModel
 
@@ -90,6 +90,9 @@ class TestBaseQuery(BaseTest):
     def test_one(self):
         with pytest.raises(OmdbQueryException, match='Do not forget attributes!'):
             BaseTestModel.one()
+
+        with pytest.raises(OmdbModelNotFoundException):
+            BaseTestModel.one(id=1)
 
         test = BaseTestModel('foo1', 'bar1', 'baz').save()
         result = BaseTestModel.one(id=test.id)
