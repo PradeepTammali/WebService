@@ -95,13 +95,13 @@ repos:
     - --negate # fails if the entry is NOT matched
     stages:
     - commit-msg
-- repo: local
-  hooks:
-  - id: pytest
-    name: pytest
-    entry: make test
-    language: system
-    pass_filenames: false
-    always_run: true
-    stages:
-    - pre-push
+# - repo: local
+#   hooks:
+#   - id: pytest
+#     name: pytest
+#     entry: make test
+#     language: system
+#     pass_filenames: false
+#     always_run: true
+#     stages:
+#     - pre-push

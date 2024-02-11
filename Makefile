@@ -20,7 +20,7 @@ lint:
 	pipenv run pre-commit run --all-files
 
 test:
-	pipenv run pytest tests/* --cov
+	pipenv run pytest -n auto tests --cov
 
 run:
 	pipenv run python run.py
