@@ -43,9 +43,6 @@ def error_404(e: NotFound) -> Response:
 
 @app.app_errorhandler(MethodNotAllowed)
 def error_405(e: MethodNotAllowed) -> Response:
-    if e.description == MethodNotAllowed.description:
-        e.description = 'The method is not allowed for the requested URL'
-
     return error(code=e.code, text=e.description, extra_keys={'exception': e})
 
 

@@ -14,6 +14,7 @@ from omdb.config import config
 from omdb.db.base import db
 from omdb.models.user import User
 from omdb.utils.hashers import generate_email, random_hash16, random_hash32
+from tests.shared.error_handlers import error_handler_blueprint
 from tests.shared.http import http_blueprint
 from tests.shared.request_hooks import request_hooks_blueprint
 
@@ -53,6 +54,7 @@ class BaseTest:
         # Register test blueprints
         application.register_blueprint(request_hooks_blueprint)
         application.register_blueprint(http_blueprint)
+        application.register_blueprint(error_handler_blueprint)
         return application
 
     @pytest.fixture(autouse=True)
