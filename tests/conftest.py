@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from typing import Any
+from unittest import TestCase
 
 import pytest
 from flask import Flask, Response
@@ -14,6 +15,7 @@ from omdb.db.base import db
 from omdb.models.user import User
 from omdb.utils.hashers import generate_email, random_hash16, random_hash32
 from tests.shared.http import http_blueprint
+from tests.shared.request_hooks import request_hooks_blueprint
 
 
 class BaseTestFlaskClient(FlaskLoginClient):
@@ -33,6 +35,9 @@ class BaseTestFlaskClient(FlaskLoginClient):
 class BaseTest:
     _app: Flask
     assert_raises = staticmethod(pytest.raises)
+    assert_equal = staticmethod(TestCase().assertEqual)
+    assert_in = staticmethod(TestCase().assertIn)
+    assert_not_in = staticmethod(TestCase().assertNotIn)
 
     @pytest.fixture(autouse=True)
     def test_db(self, worker_id):
@@ -46,6 +51,7 @@ class BaseTest:
         application.test_client_class = BaseTestFlaskClient
 
         # Register test blueprints
+        application.register_blueprint(request_hooks_blueprint)
         application.register_blueprint(http_blueprint)
         return application
 
