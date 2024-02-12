@@ -13,11 +13,3 @@ class OmdbLoginManager(LoginManager):
 
 login_manager = OmdbLoginManager()
 bcrypt = Bcrypt()
-
-
-@login_manager.user_loader
-def load_user(user_id: int):
-    # pylint: disable=import-outside-toplevel
-    from omdb.models.user import User
-
-    return User.one_or_none(id=user_id)
