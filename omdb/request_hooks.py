@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, Response
+import time
+from datetime import datetime
 
+import pytz
+from flask import Blueprint, Response, g, request
+from flask_login import current_user
+from werkzeug.exceptions import InternalServerError
+
+from omdb.config import config
 from omdb.db.base import db
 from omdb.log import log
 from omdb.login_manager import login_manager
 from omdb.models.user import User
+from omdb.utils.hashers import generate_request_id
+from omdb.utils.http import success
 
 app = Blueprint('request_hooks', __name__, url_prefix='/')
 
@@ -14,23 +23,74 @@ app = Blueprint('request_hooks', __name__, url_prefix='/')
 # TODO: add test cases properly
 
 
-@app.before_app_request
-def before_request():
-    pass
-
-
 @login_manager.user_loader
 def load_user(user_id: int):
     return User.one_or_none(id=user_id)
 
 
+@app.before_app_request
+def before_request():
+    if request.path == '/api/health_check':
+        return success()
+
+    # Used by transaction log and response headers (place as close to start as possible)
+    g.request_time = time.time()
+
+    # A unique ID so that we can track each request in the logs
+    g.request_id = generate_request_id()
+
+    if request.path.startswith('/api/'):
+        log.debug('request (before) - request on url %s with method %s', request.full_path, request.method)
+
+    if current_user.is_anonymous:
+        log.debug('Anonymous user accessing url %s with method %s', request.full_path, request.method)
+
+    if current_user.is_authenticated:
+        log.info(
+            '[access_log] endpoint=%(endpoint)s user_id=%(user_id)s is_admin=%(is_admin)s ',
+            {
+                'user_id': current_user.id,
+                'is_admin': current_user.is_admin,
+                'endpoint': request.endpoint,
+            },
+        )
+
+    return None
+
+
 @app.after_app_request
 def after_request(response: Response):
+    if request.path.startswith('/api/'):
+        log.debug(
+            'request (after) - request on url %s with method %s and status %s',
+            request.full_path,
+            request.method,
+            response.status,
+        )
+
+    # Debug headers (only)
+    response.headers['X-OMDB-Server-Time'] = datetime.now(tz=pytz.utc)
+    response.headers['X-OMDB-API-Version'] = '1.0'
+    response.headers['X-OMDB-Environment'] = config.ENVIRONMENT
+    response.headers['X-OMDB-Request-ID'] = g.request_id
+
+    # Security headers
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000'
+    response.headers['Referrer-Policy'] = 'strict-origin'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+
     if response.status_code not in [200, 201, 202, 204, 301, 302]:
         db.session.rollback()
         return response
 
-    db.session.commit()
+    try:
+        db.session.commit()
+    except Exception as e:
+        response.headers['X-Flow-Request-Time'] = f'{((time.time() - g.request_time) * 1000)}.0f'
+        log.error('request (after) - db commit failed: %s', str(e))
+        raise InternalServerError(f'request (after) - db commit failed: {str(e)}') from e
+
     return response
 
 

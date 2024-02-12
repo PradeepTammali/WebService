@@ -12,7 +12,7 @@ from omdb import app
 from omdb.config import config
 from omdb.db.base import db
 from omdb.models.user import User
-from omdb.utils.hashers import generate_email, generate_password, random_hash
+from omdb.utils.hashers import generate_email, random_hash16, random_hash32
 from tests.shared.http import http_blueprint
 
 
@@ -37,7 +37,7 @@ class BaseTest:
     @pytest.fixture(autouse=True)
     def test_db(self, worker_id):
         db_url = make_url(config.SQLALCHEMY_DATABASE_URI)
-        db_url = db_url.set(database=f'{config.MYSQL_DEFAULT_DB_NAME}_{worker_id}_{random_hash()}')
+        db_url = db_url.set(database=f'{config.MYSQL_DEFAULT_DB_NAME}_{worker_id}_{random_hash32()}')
         config.SQLALCHEMY_DATABASE_URI = db_url.render_as_string(hide_password=False)
 
     @pytest.fixture
@@ -78,7 +78,7 @@ class BaseTest:
 
     def login_as_user(self) -> User | None:
         email: str = generate_email()
-        password: str = generate_password()
+        password: str = random_hash16()
         user: User | None = User.one_or_none(email=email)
         if user is None:
             user = User(email=email, password=password)
