@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Response
 
-from omdb.controllers.movie_multiple import MovieMultipleController
+from omdb.controllers.movie.movie_multiple import MovieMultipleController
 from omdb.schema.movie import MovieInputSchema, MovieSchema
 from omdb.utils.http import success, validate_schema
 

@@ -9,6 +9,7 @@ from omdb.db.base import db
 from omdb.exceptions.base import OmdbInvalidDataException
 from omdb.log import log
 from omdb.models.movie import Movie, Rating
+from omdb.models.user import User
 from omdb.schema.build_db import MovieResultSchema, MovieSearchResultSchema
 from omdb.utils.request import OmdbRequest
 
@@ -63,28 +64,44 @@ def _dump_data_to_db(movies_data: list[dict]):
                 rating.save()
 
 
-def populate_database(app: Flask):
+def populate_data(app: Flask):
     if config.is_unittest():
         return
 
     with app.app_context():
-        movies_count = Movie.count()
-        if movies_count >= DATASET_SIZE:
-            log.warning('Data exists in DB, skipping populating database...')
-            return
+        create_users()
+        populate_database()
 
-        movie_imdb_ids = _get_movie_imdb_ids()
-        movies_data = _get_movies_data(imdb_ids=movie_imdb_ids)
-        try:
-            _dump_data_to_db(movies_data=movies_data)
-        except Exception:  # pylint: disable=broad-exception-caught
-            # Cleaning up database to build freshly
-            db.session.rollback()
-            db.drop_all()
-            if database_exists(config.SQLALCHEMY_DATABASE_URI):
-                drop_database(config.SQLALCHEMY_DATABASE_URI)
-            log.error('Error while building database...')
-            sys.exit(1)
 
-        db.session.commit()
-        log.info('Databae building successfull...')
+def create_users():
+    log.info('Creating default user...')
+    if User.one_or_none(email=config.DEFAULT_USER_EMAIL) is not None:
+        log.warning('Default user already exists, Skipping...')
+        return
+
+    User(email=config.DEFAULT_USER_EMAIL, password=config.DEFAULT_USER_PASSWORD, is_admin=True).save()
+    db.session.commit()
+    log.info('Default user created...')
+
+
+def populate_database():
+    movies_count = Movie.count()
+    if movies_count >= DATASET_SIZE:
+        log.warning('Data exists in DB, skipping populating database...')
+        return
+
+    movie_imdb_ids = _get_movie_imdb_ids()
+    movies_data = _get_movies_data(imdb_ids=movie_imdb_ids)
+    try:
+        _dump_data_to_db(movies_data=movies_data)
+    except Exception:  # pylint: disable=broad-exception-caught
+        # Cleaning up database to build freshly
+        db.session.rollback()
+        db.drop_all()
+        if database_exists(config.SQLALCHEMY_DATABASE_URI):
+            drop_database(config.SQLALCHEMY_DATABASE_URI)
+        log.error('Error while building database...')
+        sys.exit(1)
+
+    db.session.commit()
+    log.info('Databae building successfull...')

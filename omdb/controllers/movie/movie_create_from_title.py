@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from marshmallow.exceptions import ValidationError
 
-from omdb.controllers.movie_create import MovieCreateController
+from omdb.controllers.movie.movie_create import MovieCreateController
 from omdb.exceptions.base import OmdbRequestException
 from omdb.models.movie import Movie
 from omdb.schema.build_db import MovieResultSchema

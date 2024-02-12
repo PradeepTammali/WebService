@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Response
 
-from omdb.controllers.movie_one import MovieOneController
+from omdb.controllers.movie.movie_one import MovieOneController
 from omdb.exceptions.base import OmdbModelNotFoundException
 from omdb.schema.movie import MovieSchema
 from omdb.utils.http import error, success

@@ -3,6 +3,8 @@ from flask import Blueprint, Response
 
 from omdb.db.base import db
 from omdb.log import log
+from omdb.login_manager import login_manager
+from omdb.models.user import User
 
 app = Blueprint('request_hooks', __name__, url_prefix='/')
 
@@ -15,6 +17,11 @@ app = Blueprint('request_hooks', __name__, url_prefix='/')
 @app.before_app_request
 def before_request():
     pass
+
+
+@login_manager.user_loader
+def load_user(user_id: int):
+    return User.one_or_none(id=user_id)
 
 
 @app.after_app_request

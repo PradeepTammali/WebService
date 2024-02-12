@@ -2,11 +2,11 @@
 from flask import Blueprint
 
 from omdb.config import config
-from omdb.views.movie_create import movie_create
-from omdb.views.movie_create_from_title import movie_create_from_title
-from omdb.views.movie_delete import movie_delete
-from omdb.views.movie_multiple import movie_multiple
-from omdb.views.movie_one import movie_one
+from omdb.views.movie.movie_create import movie_create
+from omdb.views.movie.movie_create_from_title import movie_create_from_title
+from omdb.views.movie.movie_delete import movie_delete
+from omdb.views.movie.movie_multiple import movie_multiple
+from omdb.views.movie.movie_one import movie_one
 
 movies = Blueprint('movies', __name__, url_prefix=f'{config.API_PREFIX}/movies')
 

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 from omdb.exceptions.base import OmdbInvalidDataException
 from omdb.models.movie import Movie, Rating
-from omdb.utils.build_db import DATASET_SIZE, _dump_data_to_db, _get_movie_imdb_ids, _get_movies_data, populate_database
+from omdb.utils.build_db import DATASET_SIZE, _dump_data_to_db, _get_movie_imdb_ids, _get_movies_data, populate_data
 from tests.conftest import BaseTest
 
 
@@ -117,7 +117,7 @@ class TestPopulateDatabase(BaseTest):
 
     @patch('omdb.utils.build_db._dump_data_to_db')
     @patch('omdb.config.base.BaseConfig.is_unittest')
-    def test_populate_database_failed(
+    def test_populate_data_failed(
         self,
         mock_is_unittest: MagicMock,
         mock_dump_data_to_db: MagicMock,
@@ -131,7 +131,7 @@ class TestPopulateDatabase(BaseTest):
         mock_omdb_api_get_by_imdb_id.side_effect = mock_get_by_imdb_id
 
         with self.assert_raises(SystemExit):
-            populate_database(app=test_app)
+            populate_data(app=test_app)
         mock_dump_data_to_db.assert_called()
         assert mock_dump_data_to_db.call_count == 1
         mock_is_unittest.assert_called()
@@ -142,7 +142,7 @@ class TestPopulateDatabase(BaseTest):
         assert mock_omdb_api_get_by_imdb_id.call_count == 100
 
     @patch('omdb.config.base.BaseConfig.is_unittest')
-    def test_populate_database(
+    def test_populate_data(
         self,
         mock_is_unittest: MagicMock,
         mock_omdb_api_search: MagicMock,
@@ -153,7 +153,7 @@ class TestPopulateDatabase(BaseTest):
         mock_omdb_api_search.side_effect = mock_search
         mock_omdb_api_get_by_imdb_id.side_effect = mock_get_by_imdb_id
 
-        populate_database(app=test_app)
+        populate_data(app=test_app)
         assert Movie.count() == DATASET_SIZE
         assert Rating.count() == 300
 
@@ -164,7 +164,7 @@ class TestPopulateDatabase(BaseTest):
         mock_omdb_api_get_by_imdb_id.assert_called()
         assert mock_omdb_api_get_by_imdb_id.call_count == 100
 
-        populate_database(app=test_app)
+        populate_data(app=test_app)
         assert mock_is_unittest.call_count == 2
         assert mock_omdb_api_search.call_count == 10
         assert mock_omdb_api_get_by_imdb_id.call_count == 100
