@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Response
 
-from omdb.controllers.movie_create_from_title import MovieCreateFromTitleController
+from omdb.controllers.movie.movie_create_from_title import MovieCreateFromTitleController
 from omdb.exceptions.base import OmdbInvalidDataException, OmdbRequestException
 from omdb.schema.movie import MovieSchema
 from omdb.utils.http import error, success

@@ -2,7 +2,7 @@
 from flask import Response
 from flask_login import fresh_login_required
 
-from omdb.controllers.user_delete import UserDeleteController
+from omdb.controllers.user.user_delete import UserDeleteController
 from omdb.exceptions.base import OmdbModelNotFoundException, OmdbUserException
 from omdb.schema.user import UserSchema
 from omdb.utils.http import error, success

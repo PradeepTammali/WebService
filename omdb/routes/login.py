@@ -2,10 +2,10 @@
 from flask import Blueprint
 
 from omdb.config import config
-from omdb.views.user_delete import user_delete
-from omdb.views.user_login import user_login
-from omdb.views.user_logout import user_logout
-from omdb.views.user_register import user_register
+from omdb.views.user.user_delete import user_delete
+from omdb.views.user.user_login import user_login
+from omdb.views.user.user_logout import user_logout
+from omdb.views.user.user_register import user_register
 
 login = Blueprint('login', __name__, url_prefix=f'{config.API_PREFIX}/')
 

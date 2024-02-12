@@ -2,7 +2,7 @@
 from flask import Response
 from flask_login import login_required
 
-from omdb.controllers.movie_delete import MovieDeleteController
+from omdb.controllers.movie.movie_delete import MovieDeleteController
 from omdb.exceptions.base import OmdbModelNotFoundException
 from omdb.utils.http import error, success
 

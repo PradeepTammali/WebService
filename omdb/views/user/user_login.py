@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Response, render_template
 
-from omdb.controllers.user_login import UserLoginController
+from omdb.controllers.user.user_login import UserLoginController
 from omdb.exceptions.base import OmdbModelNotFoundException, OmdbUserException
 from omdb.schema.user import UserSchema
 from omdb.utils.form import LoginForm

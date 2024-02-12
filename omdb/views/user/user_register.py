@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Response, render_template
 
-from omdb.controllers.user_register import UserRegisterController
+from omdb.controllers.user.user_register import UserRegisterController
 from omdb.exceptions.base import OmdbUserException
 from omdb.schema.user import UserSchema
 from omdb.utils.form import RegistrationForm
