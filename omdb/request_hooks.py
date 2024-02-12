@@ -5,7 +5,7 @@ from datetime import datetime
 import pytz
 from flask import Blueprint, Response, g, request
 from flask_login import current_user
-from werkzeug.exceptions import InternalServerError
+from werkzeug.exceptions import InternalServerError, NotFound
 
 from omdb.config import config
 from omdb.db.base import db
@@ -18,8 +18,6 @@ from omdb.utils.http import success
 app = Blueprint('request_hooks', __name__, url_prefix='/')
 
 # TODO: add request logs to the database
-# TODO: calcuate request time and set response headers
-# TODO: exception handling if commit fails and logging
 # TODO: add test cases properly
 
 
@@ -32,6 +30,10 @@ def load_user(user_id: int):
 def before_request():
     if request.path == '/api/health_check':
         return success()
+
+    # Fix automatic routing without when a slash is missing
+    if request.routing_exception:
+        raise NotFound(f'Endpoint not found, did you mean "{request.path}/"? (note the trailing slash)')
 
     # Used by transaction log and response headers (place as close to start as possible)
     g.request_time = time.time()
@@ -60,6 +62,10 @@ def before_request():
 
 @app.after_app_request
 def after_request(response: Response):
+    # Fix automatic routing without when a slash is missing
+    if request.routing_exception:
+        return response
+
     if request.path.startswith('/api/'):
         log.debug(
             'request (after) - request on url %s with method %s and status %s',
