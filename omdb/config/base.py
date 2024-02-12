@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
 
 from omdb.config.environment import get_environment, is_running_in_docker
@@ -54,6 +55,12 @@ class EnvironmentConfig(BaseConfig, AppConfig):
     # Standard datetime format
     DATE_TIME_FORMAT = f'{DateFormat.YYYY_MM_DD.value} {TimeFormat.HH_MM_SS.value}'
     DATE_TIME_FORMAT_TZ = f'{DateFormat.YYYY_MM_DD.value}T{TimeFormat.HH_MM_SS_TZ.value}'
+
+    # Session config
+    REMEMBER_COOKIE_NAME = 'X-Omdb-Token'
+    REMEMBER_COOKIE_DURATION = timedelta(minutes=30)
+    # Refresh the cookie on every request
+    REMEMBER_COOKIE_REFRESH_EACH_REQUEST = True
 
     # OMDB API config
     OMDB_API_KEY = os.getenv('OMDB_API_KEY', '1b4aea85')

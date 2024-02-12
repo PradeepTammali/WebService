@@ -2,6 +2,7 @@
 from flask_bcrypt import check_password_hash
 from flask_login import login_user
 
+from omdb.config import config
 from omdb.exceptions.base import OmdbUserException
 from omdb.models.user import User
 
@@ -27,6 +28,6 @@ class UserLoginController:
             raise OmdbUserException('password')
 
     def _login_user(self):
-        status = login_user(self.user)
+        status = login_user(self.user, remember=True, duration=config.REMEMBER_COOKIE_DURATION)
         if status is not True:
             raise OmdbUserException('user')
