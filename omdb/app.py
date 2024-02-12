@@ -5,6 +5,7 @@ from flask_cors import CORS
 from omdb import log
 from omdb.config import config
 from omdb.db.base import setup_db
+from omdb.error_handlers import app as error_handlers_blueprint
 from omdb.login_manager import bcrypt, login_manager
 from omdb.request_hooks import app as request_hooks_blueprint
 from omdb.routes.login import login as login_blueprints
@@ -25,6 +26,7 @@ def create_app(name: str) -> Flask:
     populate_data(app=app)
 
     # Register common blueprints
+    app.register_blueprint(error_handlers_blueprint)
     app.register_blueprint(request_hooks_blueprint)
 
     # Register blueprints
