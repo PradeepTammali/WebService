@@ -64,5 +64,5 @@ class TestEnvironmentConfig(BaseTest):
 
         config = EnvironmentConfig()
 
-        # Updated SQLite URI
+        # Updated MySQL URI
         assert config.SQLALCHEMY_DATABASE_URI == 'mysql+pymysql://test_user:test_password@localhost:3306/test_db'

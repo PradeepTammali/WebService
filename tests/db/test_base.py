@@ -14,7 +14,7 @@ from tests.conftest import BaseTest
 class TestSetupDB(BaseTest):
     @pytest.fixture
     def app(self, monkeypatch):
-        monkeypatch.setattr(config, 'SQLALCHEMY_DATABASE_URI', f'sqlite:///{__name__}.db')
+        monkeypatch.setattr(config, 'SQLALCHEMY_DATABASE_URI', f'{config.SQLALCHEMY_DATABASE_URI}random')
         app = Flask(__name__)
         app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
         yield app
