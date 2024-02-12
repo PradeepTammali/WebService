@@ -22,3 +22,10 @@ class UnitTestConfig(DevelopmentConfig):
 
     # Pytest database
     MYSQL_DEFAULT_DB_NAME = 'test'
+
+    DEFAULT_TEST_USER_EMAIL = os.getenv('DEFAULT_TEST_USER_EMAIL', 'admin@test.com')
+    DEFAULT_TEST_USER_PASSWORD = os.getenv('DEFAULT_TEST_USER_PASSWORD', 'admin')
+
+    # Flask-Login settings
+    # session protection shold be disabled for testing
+    SESSION_PROTECTION = None

@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-import secrets
 from typing import Any
 
 import pytest
 from flask import Flask, Response
-from flask.testing import FlaskClient
-from flask_sqlalchemy import SQLAlchemy
+from flask_login import FlaskLoginClient, login_user
 from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm import close_all_sessions
 from sqlalchemy_utils import database_exists, drop_database
@@ -13,10 +11,12 @@ from sqlalchemy_utils import database_exists, drop_database
 from omdb import app
 from omdb.config import config
 from omdb.db.base import db
+from omdb.models.user import User
+from omdb.utils.hashers import generate_email, generate_password, random_hash
 from tests.shared.http import http_blueprint
 
 
-class BaseTestFlaskClient(FlaskClient):
+class BaseTestFlaskClient(FlaskLoginClient):
     def json_post(self, url: str, **kwargs: Any) -> Response:
         kwargs['content_type'] = 'application/json'
         return self.post(url, **kwargs)
@@ -37,7 +37,7 @@ class BaseTest:
     @pytest.fixture(autouse=True)
     def test_db(self, worker_id):
         db_url = make_url(config.SQLALCHEMY_DATABASE_URI)
-        db_url = db_url.set(database=f'{config.MYSQL_DEFAULT_DB_NAME}_{worker_id}_{secrets.token_hex(16)}')
+        db_url = db_url.set(database=f'{config.MYSQL_DEFAULT_DB_NAME}_{worker_id}_{random_hash()}')
         config.SQLALCHEMY_DATABASE_URI = db_url.render_as_string(hide_password=False)
 
     @pytest.fixture
@@ -54,7 +54,7 @@ class BaseTest:
         self._app = test_app
 
     @pytest.fixture(autouse=True)
-    def init_db(self, test_app: Flask) -> SQLAlchemy:
+    def init_db(self, test_app: Flask):
         with test_app.app_context():
             yield db
             db.session.rollback()
@@ -66,3 +66,23 @@ class BaseTest:
     @property
     def client(self) -> BaseTestFlaskClient:
         return self._app.test_client()
+
+    def login_as_admin(self) -> User | None:
+        admin_user: User | None = User.one_or_none(email=config.DEFAULT_USER_EMAIL)
+        if admin_user is None:
+            admin_user = User(email=config.DEFAULT_USER_EMAIL, password=config.DEFAULT_USER_PASSWORD, is_admin=True)
+            admin_user.save()
+        with self._app.test_request_context():
+            login_user(user=admin_user)
+        return admin_user
+
+    def login_as_user(self) -> User | None:
+        email: str = generate_email()
+        password: str = generate_password()
+        user: User | None = User.one_or_none(email=email)
+        if user is None:
+            user = User(email=email, password=password)
+            user.save()
+        with self._app.test_request_context():
+            login_user(user=user)
+        return user

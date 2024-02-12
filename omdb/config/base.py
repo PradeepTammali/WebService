@@ -65,7 +65,7 @@ class EnvironmentConfig(BaseConfig, AppConfig):
     SQLALCHEMY_ECHO = False
 
     SECRET_KEY = os.getenv('SECRET_KEY', 'AvC5e_5bEU868BK2XPRb7RTBlGO9OuVJfwT3VvsdCLU')
-    DEFAULT_USER_EMAIL = os.getenv('DEFAULT_USER', 'admin@omdb.com')
+    DEFAULT_USER_EMAIL = os.getenv('DEFAULT_USER_EMAIL', 'admin@omdb.com')
     DEFAULT_USER_PASSWORD = os.getenv('DEFAULT_USER_PASSWORD', 'password1234')
 
     def __init__(self):

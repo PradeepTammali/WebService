@@ -12,10 +12,12 @@ class TestMovieDeleteView(BaseTest):
     ENDPOINT = '/api/movies/%s'
 
     def test_movie_delete_400(self):
+        self.login_as_user()
         response = self.client.json_delete(self.ENDPOINT % 1)
         assert response.status_code == 400
 
     def test_movie_delete(self):
+        self.login_as_user()
         test_data = {
             'title': 'Test Movie',
             'year': '2022',
