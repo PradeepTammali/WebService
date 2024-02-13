@@ -1,70 +1,93 @@
 # WebService
 
-## Prerequisites
+This document provides instructions on how to set up and run the application.
+
+## Getting Started
+
+### Prerequisites
+
+Ensure you have the following installed on your system:
 
 - Docker
 - Python 3.11.5
-- Docker compose
+- Docker Compose
+- Make (for development)
 
-## Run the application as docker service
+### Clone the Repository
+
+To get a local copy of the code, clone the repository and navigate into the project directory:
+
+```bash
+git clone https://github.com/PradeepTammali/WebService.git
+cd WebService
+```
+
+## Usage
+
+## Running as a Docker Service
 
 ```bash
 docker compose up -d
 ```
 
-You can reach the service at [http://localhost:5555](http://localhost:5555)
+The service will be accessible at [http://localhost:5555](http://localhost:5555)
 
-## Setup
+## Running in a Local Environment
 
-
-
-### Mysql server
-
-`docker run -d --name omdb-mysql -e MYSQL_ROOT_PASSWORD=1234 -p 3308:3306 mysql:8.2`
-
-set env varibles if you want the server to use mysql if any of the env in following is not set, the server will take the default sqllite.
+First, start the MySQL server:
 
 ```bash
-SERVICE_DATABASE_USER
-SERVICE_DATABASE_PASSWORD
-SERVICE_DATABASE_HOST
-SERVICE_DATABASE_PORT
-SERVICE_DATABASE_NAME
+docker compose up -d omdb-mysql
 ```
+
+Then, run the application using one of the following commands:
+
+`SERVICE_DATABASE_USER=root SERVICE_DATABASE_PASSWORD=1234 SERVICE_DATABASE_HOST=localhost SERVICE_DATABASE_PORT=3308 SERVICE_DATABASE_NAME=omdb gunicorn run:app`
+
+or
+
+`SERVICE_DATABASE_USER=root SERVICE_DATABASE_PASSWORD=1234 SERVICE_DATABASE_HOST=localhost SERVICE_DATABASE_PORT=3308 SERVICE_DATABASE_NAME=omdb FLASK_APP=run.py FLASK_RUN_PORT=8000 flask run`
+
+The service will be accessible at [http://localhost:8000](http://localhost:8000)
 
 ### Development
 
-Install
+Ensure `make` is installed on your system for development purposes.
 
-python
-pip
+To install and run the application, use:
 
-and install pipenv using this with the command
+`make all`
 
-pip install pipenv
+To run the application
+`make run`
 
+The service will be accessible at [http://localhost:5555](http://localhost:5555)
 
-pipenv install (intead try use pipenv sync)
+To run linting:
+`make lint`
 
-pre-commit install
+To run tests:
+`make test`
 
-pre-commit run --all-files - for first time.
+## Description
 
-push will be successfull even if there are failed checks for the unstaged changes(non commited files).
-https://github.com/pre-commit/pre-commit/issues/2486
+Here's a summary of the endpoints:
 
-pre-commit clean (rm -rf ~/.cache/pre-commit)  --- clean pre-commit cache
-pre-commit gc - clean unused cached repos
-pre-commit uninstall - uninstall pre-commit hooks
-rm -rf .git/hooks/* -- remove existing hooks
+Movie Endpoints (defined in `omdb/routes/movie.py`):
 
+- `POST /movies/`: Creates a new movie. The logic is implemented in the `movie_create` function.
+- `GET /movies/`: Retrieves multiple movies. The logic is implemented in the `movie_multiple` function.
+- `GET /movies/<string:title>`: Retrieves a single movie by its title. The logic is implemented in the `movie_one` function.
+- `POST /movies/<string:title>`: Creates a new movie from a title. The logic is implemented in the `movie_create_from_title` function.
+- `DELETE /movies/<int:movie_id>`: Deletes a movie by its ID. The user must be verified to access this endpoint. The logic for deleting a movie is implemented in the `movie_delete` function.
 
-pull request suggestions:
-1. if there is only one commit, the PR will take the first line as title and rest as description
-2. If there are multiple commits, the PR will take branch name as title leaving the description is empty
+Login Endpoints (defined in `omdb/routes/login.py`):
 
-These two approches are good:
-Small changes with single commits
-and a little bit big change with multiple commits
+- `POST /login`: Logs in a user. The logic is implemented in the `user_login` function.
+- `GET /login`: Retrieves login information. The logic is implemented in the `user_login` function.
+- `GET /logout`: Logs out a user. The logic is implemented in the `user_logout` function.
+- `POST /register`: Registers a new user. The logic is implemented in the `user_register` function.
+- `GET /register`: Retrieves registration information. The logic is implemented in the `user_register` function.
+- `GET /delete/<int:user_id>`: Deletes a user by its ID. The logic is implemented in the `user_delete` function.
 
-Don't make a PR with lot of changes in a single PR, it will be hard to review.
+Each of these endpoints is associated with a specific function in the views, which in turn uses a controller to interact with the data models. The controllers are defined in the `omdb/controllers/` directory.
