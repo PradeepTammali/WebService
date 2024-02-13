@@ -69,8 +69,20 @@ def populate_data(app: Flask):
         return
 
     with app.app_context():
-        create_users()
-        populate_database()
+        try:
+            create_users()
+            populate_database()
+            db.session.commit()
+        except Exception:  # pylint: disable=broad-exception-caught
+            # Cleaning up database to build freshly
+            db.session.rollback()
+            db.drop_all()
+            if database_exists(config.SQLALCHEMY_DATABASE_URI):
+                drop_database(config.SQLALCHEMY_DATABASE_URI)
+            log.error('Error while building database, Rerun the application to build database again...')
+            sys.exit(1)
+
+        log.info('Databae building successfull...')
 
 
 def create_users():
@@ -80,28 +92,17 @@ def create_users():
         return
 
     User(email=config.DEFAULT_USER_EMAIL, password=config.DEFAULT_USER_PASSWORD, is_admin=True).save()
-    db.session.commit()
     log.info('Default user created...')
 
 
 def populate_database():
     movies_count = Movie.count()
     if movies_count >= DATASET_SIZE:
-        log.warning('Data exists in DB, skipping populating database...')
+        log.warning('Data exists in DB, skipping populating movies in database...')
         return
 
+    log.info('Populating movies data in database...')
     movie_imdb_ids = _get_movie_imdb_ids()
     movies_data = _get_movies_data(imdb_ids=movie_imdb_ids)
-    try:
-        _dump_data_to_db(movies_data=movies_data)
-    except Exception:  # pylint: disable=broad-exception-caught
-        # Cleaning up database to build freshly
-        db.session.rollback()
-        db.drop_all()
-        if database_exists(config.SQLALCHEMY_DATABASE_URI):
-            drop_database(config.SQLALCHEMY_DATABASE_URI)
-        log.error('Error while building database...')
-        sys.exit(1)
-
-    db.session.commit()
-    log.info('Databae building successfull...')
+    _dump_data_to_db(movies_data=movies_data)
+    log.info('Movies databae building successfull...')

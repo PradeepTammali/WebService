@@ -22,6 +22,7 @@ flask-bcrypt = "==1.0.1"
 wtforms = "==3.1.2"
 flask-wtf = "==1.2.1"
 email-validator = "==2.1.0.post1"
+gunicorn = {extras = ["gevent"], version = "==21.2.0"}
 
 [dev-packages]
 ruff = "==0.2.1"

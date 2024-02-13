@@ -11,7 +11,7 @@ ENABLED_ENVIRONMENTS = [
 
 def get_environment() -> str:
     environment = os.environ.get('ENVIRONMENT', os.environ.get('APP_ENVIRONMENT', 'development'))
-    if environment not in ENABLED_ENVIRONMENTS:
+    if environment.lower() not in ENABLED_ENVIRONMENTS:
         raise ValueError(f'Invalid environment: {environment}')
 
     return environment

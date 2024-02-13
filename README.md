@@ -1,14 +1,30 @@
 # WebService
 
+## Prerequisites
+
+- Docker
+- Python 3.11.5
+- Docker compose
+
+## Run the application as docker service
+
+```bash
+docker compose up -d
+```
+
+You can reach the service at [http://localhost:5555](http://localhost:5555)
+
 ## Setup
 
-##### Mysql server
+
+
+### Mysql server
 
 `docker run -d --name omdb-mysql -e MYSQL_ROOT_PASSWORD=1234 -p 3308:3306 mysql:8.2`
 
 set env varibles if you want the server to use mysql if any of the env in following is not set, the server will take the default sqllite.
 
-```
+```bash
 SERVICE_DATABASE_USER
 SERVICE_DATABASE_PASSWORD
 SERVICE_DATABASE_HOST
