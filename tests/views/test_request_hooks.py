@@ -14,11 +14,11 @@ class TestRequestHooks(BaseTest):
     ENDPOINT_HEALTH_CHECK = '/api/health_check'
 
     def test_load_user(self):
-        user = load_user(1)
+        user = load_user('sample@test.com')
         assert not user
 
-        user = User(email='test_user', password='1234').save()  # noqa: S106
-        loaded_user = load_user(user.id)
+        user = User(email='test-user@test.com', password='1234').save()  # noqa: S106
+        loaded_user = load_user('test-user@test.com')
         assert loaded_user.id == user.id
 
     def test_health_check(self):

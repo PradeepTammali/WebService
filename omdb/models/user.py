@@ -19,3 +19,6 @@ class User(Model, UserMixin):
         self.email = email
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
         self.is_admin = is_admin
+
+    def get_id(self) -> str:
+        return self.email
