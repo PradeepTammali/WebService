@@ -42,13 +42,13 @@ docker compose up -d omdb-mysql
 
 Then, run the application using one of the following commands:
 
-`SERVICE_DATABASE_USER=root SERVICE_DATABASE_PASSWORD=1234 SERVICE_DATABASE_HOST=localhost SERVICE_DATABASE_PORT=3308 SERVICE_DATABASE_NAME=omdb gunicorn run:app`
+`SERVICE_DATABASE_USER=root SERVICE_DATABASE_PASSWORD=1234 SERVICE_DATABASE_HOST=localhost SERVICE_DATABASE_PORT=3308 SERVICE_DATABASE_NAME=omdb gunicorn -b :5555 run:app`
 
 or
 
-`SERVICE_DATABASE_USER=root SERVICE_DATABASE_PASSWORD=1234 SERVICE_DATABASE_HOST=localhost SERVICE_DATABASE_PORT=3308 SERVICE_DATABASE_NAME=omdb FLASK_APP=run.py FLASK_RUN_PORT=8000 flask run`
+`SERVICE_DATABASE_USER=root SERVICE_DATABASE_PASSWORD=1234 SERVICE_DATABASE_HOST=localhost SERVICE_DATABASE_PORT=3308 SERVICE_DATABASE_NAME=omdb FLASK_APP=run.py FLASK_RUN_PORT=5555 flask run`
 
-The service will be accessible at [http://localhost:8000](http://localhost:8000)
+The service will be accessible at [http://localhost:5555](http://localhost:5555)
 
 ### Development
 
