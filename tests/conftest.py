@@ -4,7 +4,7 @@ from unittest import TestCase
 
 import pytest
 from flask import Flask, Response
-from flask_login import FlaskLoginClient, login_user
+from flask_login import FlaskLoginClient, login_user, logout_user
 from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm import close_all_sessions
 from sqlalchemy_utils import database_exists, drop_database
@@ -35,6 +35,7 @@ class BaseTestFlaskClient(FlaskLoginClient):
 
 class BaseTest:
     _app: Flask
+    _user: User | None = None
     assert_raises = staticmethod(pytest.raises)
     assert_equal = staticmethod(TestCase().assertEqual)
     assert_in = staticmethod(TestCase().assertIn)
@@ -48,7 +49,7 @@ class BaseTest:
 
     @pytest.fixture
     def test_app(self, test_db) -> Flask:  # pylint: disable=unused-argument
-        application = app.create_app('test')
+        application = app.create_app(config.SECRET_KEY)
         application.test_client_class = BaseTestFlaskClient
 
         # Register test blueprints
@@ -65,6 +66,8 @@ class BaseTest:
     def init_db(self, test_app: Flask):
         with test_app.app_context():
             yield db
+            with test_app.test_request_context():
+                logout_user()
             db.session.rollback()
             db.drop_all()
             close_all_sessions()
@@ -73,24 +76,25 @@ class BaseTest:
 
     @property
     def client(self) -> BaseTestFlaskClient:
+        if self._user:
+            return self._app.test_client(user=self._user)
         return self._app.test_client()
 
-    def login_as_admin(self) -> User | None:
-        admin_user: User | None = User.one_or_none(email=config.DEFAULT_USER_EMAIL)
-        if admin_user is None:
-            admin_user = User(email=config.DEFAULT_USER_EMAIL, password=config.DEFAULT_USER_PASSWORD, is_admin=True)
-            admin_user.save()
-        with self._app.test_request_context():
-            login_user(user=admin_user)
-        return admin_user
-
-    def login_as_user(self) -> User | None:
+    def login_as_user(
+        self,
+        remember: bool = False,
+        force: bool = False,
+        fresh: bool = False,
+        admin: bool = False,
+    ) -> User | None:
         email: str = generate_email()
         password: str = random_hash16()
         user: User | None = User.one_or_none(email=email)
         if user is None:
-            user = User(email=email, password=password)
+            user = User(email=email, password=password, is_admin=admin)
             user.save()
         with self._app.test_request_context():
-            login_user(user=user)
+            login_user(user=user, remember=remember, force=force, fresh=fresh)
+
+        self._user = user
         return user
