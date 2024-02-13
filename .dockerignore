@@ -1,0 +1,30 @@
+# Ignore common Python files
+*.pyc
+__pycache__/
+
+# Ignore development files
+*.env
+*.log
+*.sqlite
+*.db
+.pre-commit*
+Makefile
+*_cache*
+instance/
+.coverage
+
+
+# Ignore Docker-related files
+.dockerignore
+.dockerignore.example
+Dockerfile
+docker-compose.yml
+
+# Ignore editor-specific files
+.vscode/
+.idea/
+
+# Ignore version control files
+.git/
+.gitignore
+.github/
