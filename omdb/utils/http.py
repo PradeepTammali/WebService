@@ -55,7 +55,7 @@ def error(code: int, text: str = None, extra_keys: dict[str, Any] = None) -> Res
     if text is None:
         text = 'Something went wrong.'
 
-    if extra_keys.get('exception'):
+    if extra_keys.get('exception') and isinstance(extra_keys['exception'], Exception):
         exc_traceback = extra_keys['exception'].__traceback__
 
         stacktrace = traceback.extract_tb(exc_traceback)

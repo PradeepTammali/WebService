@@ -56,12 +56,6 @@ class EnvironmentConfig(BaseConfig, AppConfig):
     DATE_TIME_FORMAT = f'{DateFormat.YYYY_MM_DD.value} {TimeFormat.HH_MM_SS.value}'
     DATE_TIME_FORMAT_TZ = f'{DateFormat.YYYY_MM_DD.value}T{TimeFormat.HH_MM_SS_TZ.value}'
 
-    # Session config
-    REMEMBER_COOKIE_NAME = 'X-Omdb-Token'
-    REMEMBER_COOKIE_DURATION = timedelta(minutes=30)
-    # Refresh the cookie on every request
-    REMEMBER_COOKIE_REFRESH_EACH_REQUEST = True
-
     # OMDB API config
     OMDB_API_KEY = os.getenv('OMDB_API_KEY', '1b4aea85')
     OMDB_DATA_TYPE = os.getenv('OMDB_DATA_TYPE', 'movie')
@@ -71,6 +65,11 @@ class EnvironmentConfig(BaseConfig, AppConfig):
     MYSQL_DEFAULT_DB_NAME = 'omdb'
     SQLALCHEMY_ECHO = False
 
+    # Session config
+    REMEMBER_COOKIE_NAME = 'X-Omdb-Token'
+    REMEMBER_COOKIE_DURATION = timedelta(minutes=30)
+    # Refresh the cookie on every request
+    REMEMBER_COOKIE_REFRESH_EACH_REQUEST = True
     SECRET_KEY = os.getenv('SECRET_KEY', 'AvC5e_5bEU868BK2XPRb7RTBlGO9OuVJfwT3VvsdCLU')
     DEFAULT_USER_EMAIL = os.getenv('DEFAULT_USER_EMAIL', 'admin@omdb.com')
     DEFAULT_USER_PASSWORD = os.getenv('DEFAULT_USER_PASSWORD', 'password1234')

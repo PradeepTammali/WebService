@@ -22,8 +22,8 @@ app = Blueprint('request_hooks', __name__, url_prefix='/')
 
 
 @login_manager.user_loader
-def load_user(user_id):
-    return User.one_or_none(id=user_id)
+def load_user(user_email: str) -> User | None:
+    return User.one_or_none(email=user_email)
 
 
 @app.before_app_request
