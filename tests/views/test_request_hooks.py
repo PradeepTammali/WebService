@@ -49,3 +49,14 @@ class TestRequestHooks(BaseTest):
             mock_commit.assert_called_once()
             self.assert_not_in('X-Flow-Request-Time', response.headers)
             self.assert_equal(response, response)
+
+    def test_after_request_success(self):
+        with patch('omdb.request_hooks.current_user') as mock_current_user:
+            user = self.login_as_user()
+            mock_current_user.is_anonymous = user.is_anonymous
+            mock_current_user.is_authenticated = user.is_authenticated
+            mock_current_user.is_admin = user.is_admin
+            mock_current_user.id = user.id
+
+            response = self.client.get(self.ENDPOINT)
+            self.assert_equal(response.status_code, 200)

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from pathlib import Path
 from typing import Any
 from unittest import TestCase
 
@@ -12,8 +13,8 @@ from sqlalchemy_utils import database_exists, drop_database
 from omdb import app
 from omdb.config import config
 from omdb.db.base import db
-from omdb.models.user import User
 from omdb.utils.hashers import generate_email, random_hash16, random_hash32
+from tests.shared.base import BaseUserModel
 from tests.shared.error_handlers import error_handler_blueprint
 from tests.shared.http import http_blueprint
 from tests.shared.request_hooks import request_hooks_blueprint
@@ -35,7 +36,7 @@ class BaseTestFlaskClient(FlaskLoginClient):
 
 class BaseTest:
     _app: Flask
-    _user: User | None = None
+    user: BaseUserModel | None = None
     assert_raises = staticmethod(pytest.raises)
     assert_equal = staticmethod(TestCase().assertEqual)
     assert_in = staticmethod(TestCase().assertIn)
@@ -49,7 +50,8 @@ class BaseTest:
 
     @pytest.fixture
     def test_app(self, test_db) -> Flask:  # pylint: disable=unused-argument
-        application = app.create_app(config.SECRET_KEY)
+        application = app.create_app(f'test_{config.SECRET_KEY}')
+        application.template_folder = Path(__file__).parent.parent / 'omdb/templates'
         application.test_client_class = BaseTestFlaskClient
 
         # Register test blueprints
@@ -61,6 +63,11 @@ class BaseTest:
     @pytest.fixture(autouse=True)
     def setup_application(self, test_app: Flask):
         self._app = test_app
+
+        @test_app.before_request
+        def app_before_request():
+            if self.user:
+                login_user(self.user, fresh=self.user.fresh, remember=self.user.remember, force=self.user.force)
 
     @pytest.fixture(autouse=True)
     def init_db(self, test_app: Flask):
@@ -76,8 +83,6 @@ class BaseTest:
 
     @property
     def client(self) -> BaseTestFlaskClient:
-        if self._user:
-            return self._app.test_client(user=self._user)
         return self._app.test_client()
 
     def login_as_user(
@@ -86,15 +91,20 @@ class BaseTest:
         force: bool = False,
         fresh: bool = False,
         admin: bool = False,
-    ) -> User | None:
+    ) -> BaseUserModel | None:
         email: str = generate_email()
         password: str = random_hash16()
-        user: User | None = User.one_or_none(email=email)
+        user: BaseUserModel | None = BaseUserModel.one_or_none(email=email)
         if user is None:
-            user = User(email=email, password=password, is_admin=admin)
+            user = BaseUserModel(
+                email=email,
+                password=password,
+                admin=admin,
+                remember=remember,
+                force=force,
+                fresh=fresh,
+            )
             user.save()
-        with self._app.test_request_context():
-            login_user(user=user, remember=remember, force=force, fresh=fresh)
 
-        self._user = user
-        return user
+        self.user = user
+        return self.user
