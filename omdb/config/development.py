@@ -30,3 +30,6 @@ class UnitTestConfig(DevelopmentConfig):
     SESSION_PERMANENT = False
     SECRET_KEY = random_hash16()
     REMEMBER_COOKIE_REFRESH_EACH_REQUEST = False
+
+    # CSRF protection should be disabled for testing
+    WTF_CSRF_ENABLED = False

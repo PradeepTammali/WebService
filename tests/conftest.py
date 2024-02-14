@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+from pathlib import Path
 from typing import Any
 from unittest import TestCase
 
 import pytest
 from flask import Flask, Response
-from flask_login import FlaskLoginClient, login_user
+from flask_login import FlaskLoginClient, login_user, logout_user
 from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm import close_all_sessions
 from sqlalchemy_utils import database_exists, drop_database
@@ -12,8 +13,8 @@ from sqlalchemy_utils import database_exists, drop_database
 from omdb import app
 from omdb.config import config
 from omdb.db.base import db
-from omdb.models.user import User
 from omdb.utils.hashers import generate_email, random_hash16, random_hash32
+from tests.shared.base import BaseUserModel
 from tests.shared.error_handlers import error_handler_blueprint
 from tests.shared.http import http_blueprint
 from tests.shared.request_hooks import request_hooks_blueprint
@@ -35,6 +36,7 @@ class BaseTestFlaskClient(FlaskLoginClient):
 
 class BaseTest:
     _app: Flask
+    user: BaseUserModel | None = None
     assert_raises = staticmethod(pytest.raises)
     assert_equal = staticmethod(TestCase().assertEqual)
     assert_in = staticmethod(TestCase().assertIn)
@@ -48,7 +50,8 @@ class BaseTest:
 
     @pytest.fixture
     def test_app(self, test_db) -> Flask:  # pylint: disable=unused-argument
-        application = app.create_app('test')
+        application = app.create_app(f'test_{config.SECRET_KEY}')
+        application.template_folder = Path(__file__).parent.parent / 'omdb/templates'
         application.test_client_class = BaseTestFlaskClient
 
         # Register test blueprints
@@ -61,10 +64,17 @@ class BaseTest:
     def setup_application(self, test_app: Flask):
         self._app = test_app
 
+        @test_app.before_request
+        def app_before_request():
+            if self.user:
+                login_user(self.user, fresh=self.user.fresh, remember=self.user.remember, force=self.user.force)
+
     @pytest.fixture(autouse=True)
     def init_db(self, test_app: Flask):
         with test_app.app_context():
             yield db
+            with test_app.test_request_context():
+                logout_user()
             db.session.rollback()
             db.drop_all()
             close_all_sessions()
@@ -75,22 +85,26 @@ class BaseTest:
     def client(self) -> BaseTestFlaskClient:
         return self._app.test_client()
 
-    def login_as_admin(self) -> User | None:
-        admin_user: User | None = User.one_or_none(email=config.DEFAULT_USER_EMAIL)
-        if admin_user is None:
-            admin_user = User(email=config.DEFAULT_USER_EMAIL, password=config.DEFAULT_USER_PASSWORD, is_admin=True)
-            admin_user.save()
-        with self._app.test_request_context():
-            login_user(user=admin_user)
-        return admin_user
-
-    def login_as_user(self) -> User | None:
+    def login_as_user(
+        self,
+        remember: bool = False,
+        force: bool = False,
+        fresh: bool = False,
+        admin: bool = False,
+    ) -> BaseUserModel | None:
         email: str = generate_email()
         password: str = random_hash16()
-        user: User | None = User.one_or_none(email=email)
+        user: BaseUserModel | None = BaseUserModel.one_or_none(email=email)
         if user is None:
-            user = User(email=email, password=password)
+            user = BaseUserModel(
+                email=email,
+                password=password,
+                admin=admin,
+                remember=remember,
+                force=force,
+                fresh=fresh,
+            )
             user.save()
-        with self._app.test_request_context():
-            login_user(user=user)
-        return user
+
+        self.user = user
+        return self.user

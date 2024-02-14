@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer
 from omdb.db.base import StringColumn
 from omdb.db.model import Model
 from omdb.db.query import BaseQueryList
+from omdb.models.user import User
 from omdb.schema import fields
 from omdb.schema.base import ModelSchema
 
@@ -33,3 +34,19 @@ class BaseTestModel(Model):
         self.value = value
         self.value2 = value2
         self.value3 = value3
+
+
+class BaseUserModel(User):
+    def __init__(  # pylint: disable=too-many-arguments
+        self,
+        email: str,
+        password: str,
+        admin: bool = False,
+        remember: bool = False,
+        force: bool = False,
+        fresh: bool = False,
+    ):
+        self.remember = remember
+        self.force = force
+        self.fresh = fresh
+        super().__init__(email=email, password=password, is_admin=admin)
