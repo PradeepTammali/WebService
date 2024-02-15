@@ -6,15 +6,15 @@ from tests.conftest import BaseTest
 
 
 class TestUserLoginView(BaseTest):
-    ENDPOINT = '/api/%s'
+    ENDPOINT = '/api/login'
 
     def test_login_success(self):
-        response = self.client.get(self.ENDPOINT % 'login')
+        response = self.client.get(self.ENDPOINT)
         assert response.status_code == 200
 
     def test_login_invalid_email(self):
         response = self.client.post(
-            self.ENDPOINT % 'login',
+            self.ENDPOINT,
             data={'email': 'invalid-email@test.com', 'password': 'password'},
             headers={'Content-Type': 'multipart/form-data'},
         )
@@ -24,7 +24,7 @@ class TestUserLoginView(BaseTest):
     def test_login_invalid_credentials(self):
         user = User(email='valid_email@example.com', password='valid_password').save()  # noqa: S106
         response = self.client.post(
-            self.ENDPOINT % 'login',
+            self.ENDPOINT,
             data={'email': user.email, 'password': 'wrong_password'},
             headers={'Content-Type': 'multipart/form-data'},
         )
@@ -36,7 +36,7 @@ class TestUserLoginView(BaseTest):
         mock_login_user.return_value = False
         user = User(email='valid_email@example.com', password='valid_password').save()  # noqa: S106
         response = self.client.post(
-            self.ENDPOINT % 'login',
+            self.ENDPOINT,
             data={'email': user.email, 'password': 'valid_password'},
             headers={'Content-Type': 'multipart/form-data'},
         )
@@ -46,7 +46,7 @@ class TestUserLoginView(BaseTest):
         user = User(email='valid_email@example.com', password='valid_password').save()  # noqa: S106
         user_id = user.id
         response = self.client.post(
-            self.ENDPOINT % 'login',
+            self.ENDPOINT,
             data={'email': user.email, 'password': 'valid_password'},
             headers={'Content-Type': 'multipart/form-data'},
         )
