@@ -3,9 +3,8 @@ from datetime import datetime
 
 import pytz
 from marshmallow import pre_load
-from marshmallow.fields import Bool, DateTime, Field, Float, Int, Nested, Str, Url
+from marshmallow.fields import Bool, DateTime, Enum, Field, Float, Int, Nested, Str, Url
 from marshmallow.validate import Equal, Range
-from marshmallow_enum import EnumField
 
 
 class UtcDateTime(DateTime):
@@ -48,6 +47,7 @@ __all__ = [
     'pre_load',
     'Bool',
     'DateTime',
+    'Enum',
     'Field',
     'Float',
     'Int',
@@ -56,7 +56,6 @@ __all__ = [
     'Url',
     'Equal',
     'Range',
-    'EnumField',
     'UtcDateTime',
     'ID',
     'Limit',
