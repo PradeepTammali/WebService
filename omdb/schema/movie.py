@@ -35,7 +35,7 @@ class MovieSchema(ModelSchema):
     imdb_rating = fields.Float()
     imdb_votes = fields.Str()
     imdb_id = fields.Str(required=True, allow_none=False)
-    type = fields.EnumField(OmdbResultType, validate=fields.Equal(OmdbResultType.MOVIE), by_value=True)
+    type = fields.Enum(OmdbResultType, validate=fields.Equal(OmdbResultType.MOVIE), by_value=True)
     dvd = fields.Str()
     box_office = fields.Str()
     production = fields.Str()

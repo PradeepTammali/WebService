@@ -12,7 +12,6 @@ pymysql = "==1.1.0"
 cryptography = "==42.0.2"
 sqlalchemy-utils = "==0.41.1"
 marshmallow = "==3.20.2"
-marshmallow-enum = "==1.5.1"
 requests = "==2.31.0"
 click = "==8.1.7"
 omdb-cli = {file = "cli", editable = true}
